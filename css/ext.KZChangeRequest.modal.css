@@ -1,0 +1,10 @@
+body {
+  padding-top: 0 !important;
+}
+#mw-page-base,
+#mw-head-base,
+#jump-to-nav,
+#top-nav,
+footer {
+  display: none !important;
+}

@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"kzchangerequest": "הצעת שינוי לתוכן האתר",
+	"kzchangerequest-desc": "לספק טופס בקשת שינוי לפתוח כרטיס ב-Jira Service Desk",
+	"kzchangerequest-intro-1": "מצאתם אי-דיוקים? יש לכם מידע נוסף או הצעות לעדכן ערך זה?",
+	"kzchangerequest-intro-2": "נשמח אם תעדכנו אותנו, במידת הצורך נעדכן את האתר.",
+	"kzchangerequest-relevantpage": "עמוד התוכן",
+	"kzchangerequest-request": "הצעות והערות לערך",
+	"kzchangerequest-contact-intro-1": "רוצים שנעדכן אתכם לגבי הפניה?",
+	"kzchangerequest-contact-intro-2": "אנא הכניסו את פרטיכם",
+	"kzchangerequest-contact-email": "דוא\"ל",
+	"kzchangerequest-contact-name": "שם",
+	"kzchangerequest-notice": "שימו לב: אתר כל-זכות מספק מידע כללי בלבד. איננו עוסקים במענה לפניות אישיות, במתן ייעוץ משפטי, או בניסיון לשנות חוקים ונהלים. אם פנייתכם קשורה בנושאים אלו, מומלץ לפנות ישירות לארגוני הסיוע הרלוונטים (פירוט הארגונים מופיע בחלקם התחתון של מרבית הערכים).",
+	"kzchangerequest-submit": "שליחת הצעת שינוי",
+
+	"kzchangerequest-textlabel": "שדה טקסט"
+}

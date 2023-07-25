@@ -1,0 +1,8 @@
+.kzcr-email.mw-htmlform-field-HTMLTextField,
+.kzcr-name.mw-htmlform-field-HTMLTextField {
+  float: right;
+  display: inline-block !important;
+  width: 50%;
+  padding-right: 5%;
+  padding-bottom: 1em;
+}

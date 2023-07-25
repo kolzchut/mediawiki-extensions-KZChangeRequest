@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"kzchangerequest": "Change Request",
+	"kzchangerequest-desc": "Provide Kol-Zchut change request form to open Jira Service Desk ticket",
+	"kzchangerequest-intro-1": "Spot an error? Have information to add or update in this article?",
+	"kzchangerequest-intro-2": "Let us know and we'll gladly make any necessary updates.",
+	"kzchangerequest-relevantpage": "Relevant page",
+	"kzchangerequest-request": "Requested changes/feedback",
+	"kzchangerequest-contact-intro-1": "Would you like to be updated about this request?",
+	"kzchangerequest-contact-intro-2": "Please enter your contact information.",
+	"kzchangerequest-contact-email": "Email",
+	"kzchangerequest-contact-name": "Name",
+	"kzchangerequest-submit": "Submit",
+
+	"kzchangerequest-textlabel": "Text Field"
+}
