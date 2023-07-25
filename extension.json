@@ -17,7 +17,6 @@
 		]
 	},
 	"AutoloadClasses": {
-		"KZChangeRequestAPI": "KZChangeRequestAPI.php",
 		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php"
 	},
   "config": {
@@ -31,9 +30,6 @@
 	},
 	"ConfigRegistry": {},
 	"Hooks": {},
-  "APIModules": {
-    "kzchangerequest": "KZChangeRequestAPI"
-  },
   "ResourceModules": {
     "ext.KZChangeRequest": {
         "localBasePath": "",
