@@ -1,15 +1,17 @@
-mw.loader.using( ['mediawiki.util'] ).then( function () {
+window.onLoadRecaptcha = function() {
 
   // Invoke reCAPTHCA on form submission
-  if (grecaptcha !== undefined && mw.config.values.wgReCaptchaV3SiteKey !== undefined) {
-    $("#kzcrButton button").on("click", function(e) {
-      e.preventDefault();
-      grecaptcha.ready(function() {
-        grecaptcha.execute(mw.config.values.wgReCaptchaV3SiteKey, {action: 'submit'}).then(function(token) {
+  if (mw.config.get('reCaptchaV3SiteKey') !== null) {
+    grecaptcha.ready(function() {
+      $("#kzcrButton button").on("click", function(e) {
+        e.preventDefault();
+        grecaptcha.execute(mw.config.get('reCaptchaV3SiteKey'), {action: 'submit'}).then(function(token) {
+          console.log('grecaptcha.execute() completed');
+          console.log(token);
           $("#kzcrChangeRequestForm").submit();
         });
       });
     });
   }
 
-} );
+};

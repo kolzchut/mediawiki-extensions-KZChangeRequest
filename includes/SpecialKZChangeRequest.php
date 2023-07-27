@@ -34,8 +34,8 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
 
     // Load form structure
     $rpage = $request->getText('rpage') ?? 'unknown';
-    $form = $this->getFormStructure($rpage);
     $modal = !empty($request->getText('modal')) || !empty($request->getPostValues()['wpkzcrModal']);
+    $form = $this->getFormStructure($rpage);
     if ($modal) {
       $form['kzcrModal'] = [
         'type' => 'hidden',
@@ -52,8 +52,9 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     } else {
       $output->addHeadItem(
         'recaptchaV3',
-        '<script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSitekey . '"></script>'
+        '<script src="https://www.google.com/recaptcha/api.js?onload=onLoadRecaptcha&render=' . $reCaptchaSitekey . '" async defer></script>'
       );
+      $output->addJsConfigVars(['reCaptchaV3SiteKey' => $reCaptchaSitekey]);
     }
 
     // ResourceLoader modules: load the form's JS and CSS
