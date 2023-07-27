@@ -1,3 +1,6 @@
+/**
+ * Temporary, skin-dependent solution for removing site chrome.
+ */
 body {
   padding-top: 0 !important;
 }

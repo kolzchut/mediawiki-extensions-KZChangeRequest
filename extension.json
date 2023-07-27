@@ -19,14 +19,12 @@
 	"AutoloadClasses": {
 		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php"
 	},
-  "config": {
-		"KZChangeRequestEnableFoo": {
-			"value": true,
-			"description": "Enables the foo functionality"
-		}
-	},
 	"SpecialPages": {
 		"KZChangeRequest": "SpecialKZChangeRequest"
+	},
+	"config": {
+		"ReCaptchaV3SiteKey": "",
+		"RecaptchaV3Secret": ""
 	},
 	"ConfigRegistry": {},
 	"Hooks": {},
