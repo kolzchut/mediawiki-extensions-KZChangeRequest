@@ -24,7 +24,16 @@
 	},
 	"config": {
 		"ReCaptchaV3SiteKey": "",
-		"RecaptchaV3Secret": ""
+		"RecaptchaV3Secret": "",
+		"JiraServiceDeskApi": {
+			"user": "",
+			"password": "",
+			"project": "",
+			"server": "",
+			"serviceDeskId": "",
+			"requestTypeId": "",
+			"shortLinkFormat": ""
+		}
 	},
 	"ConfigRegistry": {},
 	"Hooks": {},

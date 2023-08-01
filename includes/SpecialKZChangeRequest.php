@@ -30,12 +30,16 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     $output = $this->getOutput();
     $this->setHeaders();
 
-    //wfDebug('execute(): ' . print_r($request, true));
-
     // Load form structure
-    $rpage = $request->getText('rpage') ?? 'unknown';
+    $pageTitle = $request->getText('pageTitle') ?? 'unknown';
     $modal = !empty($request->getText('modal')) || !empty($request->getPostValues()['wpkzcrModal']);
-    $form = $this->getFormStructure($rpage);
+    $form = $this->getFormStructure($pageTitle);
+    if (!empty($request->getText('articleId'))) {
+      $form['kzcrArticleId']['default'] = $request->getText('articleId');
+    }
+    if (!empty($request->getText('categories'))) {
+      $form['kzcrCategories']['default'] = $request->getText('categories');
+    }
     if ($modal) {
       $form['kzcrModal'] = [
         'type' => 'hidden',
@@ -81,9 +85,51 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     // Get reCAPTCHA v3 score.
     $recaptchaScore = $this->validateRecaptcha();
 
-    // Open Jira ticket.
-    //@TODO
+    // Find or create Jira Service Desk "customer" for the current user.
+    $config = $this->getConfig();
+    $jiraConfig = $config->get('JiraServiceDeskApi');
+    $serviceDeskId = $jiraConfig['serviceDeskId'];
+    $requestTypeId = $jiraConfig['requestTypeId'];
+    if (empty($jiraConfig) || empty($jiraConfig['user']) || empty($jiraConfig['password']) || empty($jiraConfig['serviceDeskId']) || empty($jiraConfig['requestTypeId'])) {
+      $this->logger->error(
+        "Missing Jira configuration: user={user}, password={password}, serviceDeskId={serviceDeskId}, requestTypeId={requestTypeId}",
+        ['user' => $jiraConfig['user'] ?? '', 'password' => $jiraConfig['password'] ?? '', 'serviceDeskId' => $jiraConfig['serviceDeskId'] ?? '', 'requestTypeId' => $jiraConfig['requestTypeId'] ?? '']
+      );
+      return $this->msg('kzchangerequest-submission-error')->text();
+    }
+    $customerId = $this->jiraGetCustomer($postData['kzcrContactEmail'], $postData['kzcrContactName'], $jiraConfig);
+    if ($customerId === false)
+      return $this->msg('kzchangerequest-submission-error')->text();
 
+    // Open Jira Service Desk ticket.
+    $language = $this->getLanguage();
+    $languageName = $this->getLanguageName($language->mCode);
+    $issueData = [
+      'serviceDeskId' => $serviceDeskId,
+      'requestTypeId' => $requestTypeId,
+      'raiseOnBehalfOf' => $customerId ?? null,
+      'requestFieldValues' => [
+        'summary' => $postData['kzcrPageTitle'],
+        'description' => $postData['kzcrRequest'],
+        'customfield_10305' => ['value' => $languageName], // "Language"
+        'customfield_10201' => $postData['kzcrPageTitle'], // "Page Title"
+        'customfield_10202' => $postData['kzcrContactName'], // "Contact Name"
+        'customfield_10203' => $postData['kzcrContactEmail'], // "Contact Email"
+        'customfield_11691' => '', // "content_area" @TODO: is this deprecated?
+        'customfield_10800' => $postData['kzcrCategories'], // "wikipage_categories"
+        'customfield_11714' => ($recaptchaScore === false) ? -1 : $recaptchaScore, // "ReCAPTCHA Score"
+      ],
+    ];
+    $linkFormat = $jiraConfig['shortLinkFormat'];
+    if (!empty($linkFormat) && !empty($postData['kzcrArticleId'])) {
+      $link = str_replace(['$articleId', '$lang'], [$postData['kzcrArticleId'], $language->mCode], $linkFormat);
+      $issueData['requestFieldValues']['customfield_11689'] = $link; // "Link"
+    }
+    $success = $this->jiraOpenTicket($issueData, $jiraConfig);
+    if (!$success)
+      return $this->msg('kzchangerequest-submission-error')->text();
+
+    // Post-submission confirmation.
     $output = $this->getOutput();
     $output->addHTML("<p class='kzcr-confirmation'>" . $this->msg('kzchangerequest-confirmation-message')->text() . "</p>");
     return true;
@@ -92,7 +138,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
   /**
    * Define form structure
    */
-  private function getFormStructure($relevantPage = '')
+  private function getFormStructure($relevantPageTitle = '')
   {
     return array(
       'kzcrIntro' => [
@@ -102,15 +148,23 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
           . '<p>' . $this->msg('kzchangerequest-intro-2')->text() . '</p>',
         'raw' => true,
       ],
-      'kzcrRelevantPageInfo' => [
+      'kzcrPageTitleInfo' => [
         'type' => 'info',
         'label-message' => 'kzchangerequest-relevantpage',
-        'default' => $relevantPage,
+        'default' => $relevantPageTitle,
         'raw' => true,
       ],
-      'kzcrRelevantPage' => [
+      'kzcrPageTitle' => [
         'type' => 'hidden',
-        'default' => $relevantPage,
+        'default' => $relevantPageTitle,
+      ],
+      'kzcrArticleId' => [
+        'type' => 'hidden',
+        'default' => '',  // This should be set by execute() according to the query parameter.
+      ],
+      'kzcrCategories' => [
+        'type' => 'hidden',
+        'default' => '',  // This should be set by execute() according to the query parameter.
       ],
       'kzcrRequest' => [
         'type' => 'textarea',
@@ -147,6 +201,25 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
   }
 
   /**
+   * Utility to return English-language names corresponding to select language codes.
+   */
+  private function getLanguageName($mCode)
+  {
+    switch ($mCode) {
+      case 'ar':
+        return 'Arabic';
+      case 'en':
+        return 'English';
+      case 'he':
+        return 'Hebrew';
+      case 'ru':
+        return 'Russian';
+      default:
+        return 'Other';
+    }
+  }
+
+  /**
    * reCAPTCHA validation
    */
   private function validateRecaptcha()
@@ -179,11 +252,19 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     $url = wfAppendQuery($url, $data);
     $httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
       ->create($url, ['method' => 'POST'], __METHOD__);
-    $status = $httpRequest->execute();
-    if (!$status->isOK()) {
+    try {
+      $status = $httpRequest->execute();
+      if (!$status->isOK()) {
+        $this->logger->error(
+          "ReCAPTCHA validation callout failed with message: {errorMsg}",
+          ['errorMsg' => $status->getMessage()->toString()]
+        );
+        return false;
+      }
+    } catch (Exception $e) {
       $this->logger->error(
-        "ReCAPTCHA validation callout failed with message: {errorMsg}",
-        ['errorMsg' => $status->getMessage()->toString()]
+        "ReCAPTCHA validation callout threw exception with message: {exceptionMsg}",
+        ['exceptionMsg' => $e->getMessage()]
       );
       return false;
     }
@@ -206,5 +287,140 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
 
     // Success! Return the reCAPTHCA v3 score.
     return $response['score'];
+  }
+
+  /**
+   * Callout to query preexisting Jira customer with the given email.
+   */
+  private function jiraGetCustomer($email, $name, $jiraConfig)
+  {
+    if (empty($email)) return false;
+
+    $calloutUrl = $jiraConfig['server'] . "/rest/servicedeskapi/servicedesk/projectKey:{$jiraConfig['project']}/customer";
+    $queryData = [
+      'limit' => '1',
+      'query' => $email,
+    ];
+    $url = wfAppendQuery($calloutUrl, $queryData);
+    $httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
+      ->create($url, ['username' => $jiraConfig['user'], 'password' => $jiraConfig['password']], __METHOD__);
+    $httpRequest->setHeader('Accept', 'application/json');
+    $httpRequest->setHeader('Content-Type', 'application/json');
+    $httpRequest->setHeader('X-ExperimentalApi', 'opt-in');
+    try {
+      $status = $httpRequest->execute();
+      if (!$status->isOK()) {
+        $this->logger->error(
+          "Jira customer query callout failed with message: {errorMsg}, email={email}",
+          ['errorMsg' => $status->getMessage()->toString(), 'email' => $email]
+        );
+        return false;
+      }
+    } catch (Exception $e) {
+      $this->logger->error(
+        "Jira customer query callout threw exception with message: {exceptionMsg}",
+        ['exceptionMsg' => $e->getMessage()]
+      );
+      return false;
+    }
+    $json = $httpRequest->getContent();
+    $response = FormatJson::decode($json, true);
+    if (!$response) {
+      $this->logger->error(
+        "Jira customer query failed to parse JSON: {json}",
+        ['json' => $json]
+      );
+      return false;
+    }
+
+    if ($response['size'] === 0) {
+      return $this->jiraCreateCustomer($email, $name, $jiraConfig);
+    }
+
+    return $response['values'][0]['accountId'];
+  }
+
+  /**
+   * Callout to create new Jira customer with the given name and email.
+   */
+  private function jiraCreateCustomer($email, $name, $jiraConfig)
+  {
+    $calloutUrl = $jiraConfig['server'] . "/rest/servicedeskapi/customer";
+    $postData = [
+      'email' => $email,
+      'displayName' => $name,
+    ];
+    $postJson = FormatJson::encode($postData);
+    $httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
+      ->create($calloutUrl, ['method' => 'POST', 'postData' => $postJson, 'username' => $jiraConfig['user'], 'password' => $jiraConfig['password']], __METHOD__);
+    $httpRequest->setHeader('Accept', 'application/json');
+    $httpRequest->setHeader('Content-Type', 'application/json');
+    $httpRequest->setHeader('X-ExperimentalApi', 'opt-in');
+    try {
+      $status = $httpRequest->execute();
+      if (!$status->isOK()) {
+        $this->logger->error(
+          "Jira create customer callout failed with message: {errorMsg}, email={email}, name={name}",
+          ['errorMsg' => $status->getMessage()->toString(), 'email' => $email, 'name' => $name]
+        );
+        return false;
+      }
+    } catch (Exception $e) {
+      $this->logger->error(
+        "Jira create customer callout threw exception with message: {exceptionMsg}",
+        ['exceptionMsg' => $e->getMessage()]
+      );
+      return false;
+    }
+    $json = $httpRequest->getContent();
+    $response = FormatJson::decode($json, true);
+    if (!$response) {
+      $this->logger->error(
+        "Jira create customer callout failed to parse JSON: {json}",
+        ['json' => $json]
+      );
+      return false;
+    }
+
+    return $response['accountId'] ?? false;
+  }
+
+  /**
+   * Callout to open new Jira Service Desk ticket.
+   */
+  private function jiraOpenTicket($issueData, $jiraConfig)
+  {
+    $calloutUrl = $jiraConfig['server'] . '/rest/servicedeskapi/request';
+    $postJson = FormatJson::encode($issueData);
+    $httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
+      ->create($calloutUrl, ['method' => 'POST', 'postData' => $postJson, 'username' => $jiraConfig['user'], 'password' => $jiraConfig['password']], __METHOD__);
+    $httpRequest->setHeader('Accept', 'application/json');
+    $httpRequest->setHeader('Content-Type', 'application/json');
+    try {
+      $status = $httpRequest->execute();
+      if (!$status->isOK()) {
+        $this->logger->error(
+          "Jira open ticket callout failed with message: {errorMsg}, issueData={issueData}",
+          ['errorMsg' => $status->getMessage()->toString(), 'issueData' => json_encode($issueData)]
+        );
+        return false;
+      }
+    } catch (Exception $e) {
+      $this->logger->error(
+        "Jira open ticket callout threw exception with message: {exceptionMsg}",
+        ['exceptionMsg' => $e->getMessage()]
+      );
+      return false;
+    }
+    $json = $httpRequest->getContent();
+    $response = FormatJson::decode($json, true);
+    if (!$response) {
+      $this->logger->error(
+        "Jira open ticket callout failed to parse JSON: {json}",
+        ['json' => $json]
+      );
+      return false;
+    }
+    return $response;
   }
 }
