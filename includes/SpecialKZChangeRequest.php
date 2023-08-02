@@ -33,7 +33,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
 
     // Load form structure
     $modal = !empty($request->getText('modal')) || !empty($postValues['wpkzcrModal']);
-    $articleId = $postValues['articleId'] ?? $request->getText('articleId');
+    $articleId = $postValues['wpkzcrArticleId'] ?? $request->getText('articleId');
     $page = $this->getPage($articleId ?? 0);
     $pageTitle = !empty($page) ? $page->getTitle()->getText() : 'unknown';
     $form = $this->getFormStructure($pageTitle);
@@ -56,7 +56,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     } else {
       $output->addHeadItem(
         'recaptchaV3',
-        '<script src="https://www.google.com/recaptcha/api.js?onload=onLoadRecaptcha&render=' . $reCaptchaSitekey . '" async defer></script>'
+        '<script src="https://www.google.com/recaptcha/api.js" async defer></script>'
       );
       $output->addJsConfigVars(['reCaptchaV3SiteKey' => $reCaptchaSitekey]);
     }
@@ -94,6 +94,8 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
 
     // Get reCAPTCHA v3 score.
     $recaptchaScore = $this->validateRecaptcha();
+    if ($recaptchaScore === false)
+      $recaptchaScore = -1; // Fail silently if something's wrong with reCAPTCHA.
 
     // Find or create Jira Service Desk "customer" for the current user.
     $config = $this->getConfig();
@@ -244,8 +246,6 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
    */
   private function validateRecaptcha()
   {
-    $request = $this->getRequest();
-
     // Get configuration.
     $config = $this->getConfig();
     $secret = $config->get('RecaptchaV3Secret');
@@ -255,20 +255,21 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       return false;
     }
 
-    // Get response token from POST submission.
-    $postValues = $request->getPostValues();
-    if (empty($postValues['g-recaptcha-response'])) {
+    // Get response token from POST data.
+    // Note this is added to the submission directly by reCAPTCHA js and is not processed by mediawiki as part of the HTMLForm.
+    if (empty($_POST['g-recaptcha-response'])) {
       $this->logger->error("ReCAPTCHA didn't return response from client side");
       return false;
     }
 
-    $url = 'https://www.google.com/recaptcha/api/siteverify';
-    // Build data to append to request
+    // Callout to reCAPTCHA v3 to validate response from the client side.
+    $request = $this->getRequest();
     $data = [
-      'response' => $postValues['g-recaptcha-response'],
+      'response' => $_POST['g-recaptcha-response'],
       'secret' => $secret,
       'remoteip' => $request->getIP(),
     ];
+    $url = 'https://www.google.com/recaptcha/api/siteverify';
     $url = wfAppendQuery($url, $data);
     $httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
       ->create($url, ['method' => 'POST'], __METHOD__);

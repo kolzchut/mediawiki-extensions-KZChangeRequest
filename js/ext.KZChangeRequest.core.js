@@ -1,17 +1,13 @@
-window.onLoadRecaptcha = function() {
+$(function() {
+  // Prepare the Change Request form's submit button for reCAPTCHA
+  $("#kzcrButton button")
+    .addClass('g-recaptcha')
+    .attr('data-sitekey', mw.config.get('reCaptchaV3SiteKey'))
+    .attr('data-callback', 'recaptchaOnSubmit')
+    .attr('data-action', 'submit');
 
-  // Invoke reCAPTHCA on form submission
-  if (mw.config.get('reCaptchaV3SiteKey') !== null) {
-    grecaptcha.ready(function() {
-      $("#kzcrButton button").on("click", function(e) {
-        e.preventDefault();
-        grecaptcha.execute(mw.config.get('reCaptchaV3SiteKey'), {action: 'submit'}).then(function(token) {
-          console.log('grecaptcha.execute() completed');
-          console.log(token);
-          $("#kzcrChangeRequestForm").submit();
-        });
-      });
-    });
-  }
-
-};
+  // Provide reCAPTCHA with a submit handler.
+  window.recaptchaOnSubmit = function(token) {
+    $("#kzcrChangeRequestForm").submit();
+  };
+});
