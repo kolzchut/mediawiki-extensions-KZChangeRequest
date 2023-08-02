@@ -97,7 +97,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       );
       return $this->msg('kzchangerequest-submission-error')->text();
     }
-    $customerId = $this->jiraGetCustomer($postData['kzcrContactEmail'], $postData['kzcrContactName'], $jiraConfig);
+    $customerId = $this->jiraGetCustomer($postData['kzcrContactEmail'], $jiraConfig);
     if ($customerId === false)
       return $this->msg('kzchangerequest-submission-error')->text();
 
@@ -292,7 +292,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
   /**
    * Callout to query preexisting Jira customer with the given email.
    */
-  private function jiraGetCustomer($email, $name, $jiraConfig)
+  private function jiraGetCustomer($email, $jiraConfig)
   {
     if (empty($email)) return false;
 
@@ -333,56 +333,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       return false;
     }
 
-    if ($response['size'] === 0) {
-      return $this->jiraCreateCustomer($email, $name, $jiraConfig);
-    }
-
-    return $response['values'][0]['accountId'];
-  }
-
-  /**
-   * Callout to create new Jira customer with the given name and email.
-   */
-  private function jiraCreateCustomer($email, $name, $jiraConfig)
-  {
-    $calloutUrl = $jiraConfig['server'] . "/rest/servicedeskapi/customer";
-    $postData = [
-      'email' => $email,
-      'displayName' => $name,
-    ];
-    $postJson = FormatJson::encode($postData);
-    $httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
-      ->create($calloutUrl, ['method' => 'POST', 'postData' => $postJson, 'username' => $jiraConfig['user'], 'password' => $jiraConfig['password']], __METHOD__);
-    $httpRequest->setHeader('Accept', 'application/json');
-    $httpRequest->setHeader('Content-Type', 'application/json');
-    $httpRequest->setHeader('X-ExperimentalApi', 'opt-in');
-    try {
-      $status = $httpRequest->execute();
-      if (!$status->isOK()) {
-        $this->logger->error(
-          "Jira create customer callout failed with message: {errorMsg}, email={email}, name={name}",
-          ['errorMsg' => $status->getMessage()->toString(), 'email' => $email, 'name' => $name]
-        );
-        return false;
-      }
-    } catch (Exception $e) {
-      $this->logger->error(
-        "Jira create customer callout threw exception with message: {exceptionMsg}",
-        ['exceptionMsg' => $e->getMessage()]
-      );
-      return false;
-    }
-    $json = $httpRequest->getContent();
-    $response = FormatJson::decode($json, true);
-    if (!$response) {
-      $this->logger->error(
-        "Jira create customer callout failed to parse JSON: {json}",
-        ['json' => $json]
-      );
-      return false;
-    }
-
-    return $response['accountId'] ?? false;
+    return ($response['size'] === 0) ? null : $response['values'][0]['accountId'];
   }
 
   /**
