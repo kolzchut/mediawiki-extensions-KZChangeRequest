@@ -27,18 +27,18 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
   public function execute($par)
   {
     $request = $this->getRequest();
+    $postValues = $request->getPostValues();
     $output = $this->getOutput();
     $this->setHeaders();
 
     // Load form structure
-    $pageTitle = $request->getText('pageTitle') ?? 'unknown';
-    $modal = !empty($request->getText('modal')) || !empty($request->getPostValues()['wpkzcrModal']);
+    $modal = !empty($request->getText('modal')) || !empty($postValues['wpkzcrModal']);
+    $articleId = $postValues['articleId'] ?? $request->getText('articleId');
+    $page = $this->getPage($articleId ?? 0);
+    $pageTitle = !empty($page) ? $page->getTitle()->getText() : 'unknown';
     $form = $this->getFormStructure($pageTitle);
     if (!empty($request->getText('articleId'))) {
       $form['kzcrArticleId']['default'] = $request->getText('articleId');
-    }
-    if (!empty($request->getText('categories'))) {
-      $form['kzcrCategories']['default'] = $request->getText('categories');
     }
     if ($modal) {
       $form['kzcrModal'] = [
@@ -82,6 +82,16 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
    */
   public function handleSubmit($postData)
   {
+    // Verify valid article and get categories.
+    $page = $this->getPage($postData['kzcrArticleId']);
+    if (!$page)
+      return $this->msg('kzchangerequest-submission-error')->text();
+    $pageTitle = $page->getTitle()->getText();
+    $pageCategories = [];
+    foreach ($page->getCategories() as $category) {
+      $pageCategories[] = $category->getText();
+    }
+
     // Get reCAPTCHA v3 score.
     $recaptchaScore = $this->validateRecaptcha();
 
@@ -109,14 +119,14 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       'requestTypeId' => $requestTypeId,
       'raiseOnBehalfOf' => $customerId ?? null,
       'requestFieldValues' => [
-        'summary' => $postData['kzcrPageTitle'],
+        'summary' => $pageTitle,
         'description' => $postData['kzcrRequest'],
         'customfield_10305' => ['value' => $languageName], // "Language"
-        'customfield_10201' => $postData['kzcrPageTitle'], // "Page Title"
+        'customfield_10201' => $pageTitle, // "Page Title"
         'customfield_10202' => $postData['kzcrContactName'], // "Contact Name"
         'customfield_10203' => $postData['kzcrContactEmail'], // "Contact Email"
         'customfield_11691' => '', // "content_area" @TODO: is this deprecated?
-        'customfield_10800' => $postData['kzcrCategories'], // "wikipage_categories"
+        'customfield_10800' => $pageCategories, // "wikipage_categories"
         'customfield_11714' => ($recaptchaScore === false) ? -1 : $recaptchaScore, // "ReCAPTCHA Score"
       ],
     ];
@@ -136,9 +146,27 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
   }
 
   /**
+   * Utility method to load page info, with error logging.
+   * 
+   * @return WikiPage|false
+   */
+  private function getPage($articleId)
+  {
+    $page = WikiPage::newFromID($articleId);
+    if (!$page) {
+      $this->logger->alert(
+        "Failed to find page corresponding to articleId {articleId}",
+        ['articleId' => $articleId]
+      );
+      return false;
+    }
+    return $page;
+  }
+
+  /**
    * Define form structure
    */
-  private function getFormStructure($relevantPageTitle = '')
+  private function getFormStructure($pageTitle = '')
   {
     return array(
       'kzcrIntro' => [
@@ -151,18 +179,10 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       'kzcrPageTitleInfo' => [
         'type' => 'info',
         'label-message' => 'kzchangerequest-relevantpage',
-        'default' => $relevantPageTitle,
+        'default' => $pageTitle,
         'raw' => true,
       ],
-      'kzcrPageTitle' => [
-        'type' => 'hidden',
-        'default' => $relevantPageTitle,
-      ],
       'kzcrArticleId' => [
-        'type' => 'hidden',
-        'default' => '',  // This should be set by execute() according to the query parameter.
-      ],
-      'kzcrCategories' => [
         'type' => 'hidden',
         'default' => '',  // This should be set by execute() according to the query parameter.
       ],
