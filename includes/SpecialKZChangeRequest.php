@@ -37,8 +37,8 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     $page = $this->getPage($articleId ?? 0);
     $pageTitle = !empty($page) ? $page->getTitle()->getText() : 'unknown';
     $form = $this->getFormStructure($pageTitle);
-    if (!empty($request->getText('articleId'))) {
-      $form['kzcrArticleId']['default'] = $request->getText('articleId');
+    if (!empty($articleId)) {
+      $form['kzcrArticleId']['default'] = $articleId;
     }
     if ($modal) {
       $form['kzcrModal'] = [
