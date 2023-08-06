@@ -58,7 +58,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       $output->addScript(
         '<script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSitekey . '"></script>'
       );
-      $output->addScript('<script>grecaptchaOnJs();</script>');
+      $output->addScript('<script>if (window.grecaptchaOnJs !== undefined) { window.grecaptchaOnJs(); } else { window.grecaptchaOnJsReady=true; }</script>');
     }
 
     // ResourceLoader modules: load the form's JS and CSS

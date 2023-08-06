@@ -15,7 +15,7 @@ window.grecaptchaOnJs = function() {
     e.preventDefault();
 
     // Manually invoke the browser's HTML form field validation prior to the reCAPTCHA callout.
-    if (jqForm[0].checkValidity()) {
+    if (jqForm.checkValidity()) {
       // Form validated by the browser, so callout to reCAPTCHA.
       grecaptcha.ready(function() {
         grecaptcha.execute(mw.config.get('reCaptchaV3SiteKey'), {action: 'change_request'}).then(function(token) {
@@ -26,7 +26,10 @@ window.grecaptchaOnJs = function() {
     }
     else {
       // Form failed validation by the browser, so show error(s).
-      jqForm[0].reportValidity();
+      jqForm.reportValidity();
     }
   });
 };
+
+// And if the reCAPTCHA js has loaded already, we can run this now.
+if (window.grecaptchaOnJsReady !== undefined) window.grecaptchaOnJs();
