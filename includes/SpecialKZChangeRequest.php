@@ -32,19 +32,12 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
     $this->setHeaders();
 
     // Load form structure
-    $modal = !empty($request->getText('modal')) || !empty($postValues['wpkzcrModal']);
     $articleId = $postValues['wpkzcrArticleId'] ?? $request->getText('articleId');
     $page = $this->getPage($articleId ?? 0);
     $pageTitle = !empty($page) ? $page->getTitle()->getText() : 'unknown';
     $form = $this->getFormStructure($pageTitle);
     if (!empty($articleId)) {
       $form['kzcrArticleId']['default'] = $articleId;
-    }
-    if ($modal) {
-      $form['kzcrModal'] = [
-        'type' => 'hidden',
-        'default' => '1',
-      ];
     }
 
     // Include reCAPTCHA
@@ -63,9 +56,6 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
 
     // ResourceLoader modules: load the form's JS and CSS
     $output->addModules('ext.KZChangeRequest');
-    if ($modal) {
-      $output->addModuleStyles('ext.KZChangeRequest.modal');
-    }
 
     // Build the form
     $htmlForm = HTMLForm::factory('ooui', $form, $this->getContext());

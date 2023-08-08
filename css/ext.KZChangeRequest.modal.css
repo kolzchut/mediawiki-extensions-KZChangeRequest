@@ -1,13 +1,10 @@
-/**
- * Temporary, skin-dependent solution for removing site chrome.
- */
-body {
-  padding-top: 0 !important;
+.kzcr-cancel {  /* container div */
+  margin: 1em 0;
 }
-#mw-page-base,
-#mw-head-base,
-#jump-to-nav,
-#top-nav,
-footer {
-  display: none !important;
+#kzcr-cancel {  /* link */
+  text-decoration: none;
+  color: blue;
+}
+#kzcr-cancel:hover {  /* link */
+  text-decoration: underline;
 }

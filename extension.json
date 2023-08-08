@@ -17,10 +17,16 @@
 		]
 	},
 	"AutoloadClasses": {
-		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php"
+		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php",
+		"ApiKZChangeRequestLoad": "includes/ApiKZChangeRequestLoad.php",
+		"ApiKZChangeRequestSubmit": "includes/ApiKZChangeRequestSubmit.php"
 	},
 	"SpecialPages": {
 		"KZChangeRequest": "SpecialKZChangeRequest"
+	},
+	"APIModules": {
+		"kzcrLoad": "ApiKZChangeRequestLoad",
+		"kzcrSubmit": "ApiKZChangeRequestSubmit"
 	},
 	"config": {
 		"ReCaptchaV3SiteKey": "",
@@ -47,6 +53,7 @@
     "ext.KZChangeRequest.modal": {
       "localBasePath": "",
       "remoteExtPath": "KZChangeRequest",
+			"scripts": ["js/ext.KZChangeRequest.modal.js"],
       "styles": ["css/ext.KZChangeRequest.modal.css"]
     }
   },

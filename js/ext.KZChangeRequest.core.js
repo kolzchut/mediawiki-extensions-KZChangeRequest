@@ -1,4 +1,7 @@
-$(function() {
+window.kzcrAlterForm = function() {
+  // Don't make the same alterations twice.
+  if ($("#kzcrButton button").hasClass('g-recaptcha')) return;
+
   // Prepare the Change Request form's submit button for reCAPTCHA
   $("#kzcrButton button")
     .addClass('g-recaptcha')
@@ -6,7 +9,8 @@ $(function() {
 
   // Manually define a form element to return the reCAPTCHA token. We will set this manually below.
   $("#kzcrChangeRequestForm").append('<input id="recaptchaToken" type="hidden" name="g-recaptcha-response" value="" />');
-});
+};
+$(window.kzcrAlterForm);
 
 // To avoid race conditions, define all grecaptcha-dependent logic here. It will be called after the reCAPTCHA js is loaded.
 window.grecaptchaOnJs = function() {
