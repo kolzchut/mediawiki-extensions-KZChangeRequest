@@ -15,6 +15,7 @@
 	"kzchangerequest-notice": "Please Note: The Kol-Zchut website is an informational resource only. We are unable to answer personal inquiries, provide legal advice, or lobby for changes to laws and procedures. If your matter concerns any of the above we recommend you reach out to an organization equipped to provide such assistance. Organization details appear at the bottom of most entries.",
 	"kzchangerequest-submit": "Submit",
 	"kzchangerequest-cancel": "Cancel",
+	"kzchangerequest-finish": "Finish and close window",
 	"kzchangerequest-submission-error": "Sorry, due to an internal system error your request could not be submitted. Please try again later.",
 	"kzchangerequest-confirmation-message": "Thank you! Your request has been submitted.",
 	"kzchangerequest-modal-load-error": "Sorry, due to an internal system error a change request cannot be opened at this time. Please try again later."

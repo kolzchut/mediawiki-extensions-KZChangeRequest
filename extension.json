@@ -18,15 +18,13 @@
 	},
 	"AutoloadClasses": {
 		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php",
-		"ApiKZChangeRequestLoad": "includes/ApiKZChangeRequestLoad.php",
-		"ApiKZChangeRequestSubmit": "includes/ApiKZChangeRequestSubmit.php"
+		"ApiKZChangeRequestModal": "includes/ApiKZChangeRequestModal.php"
 	},
 	"SpecialPages": {
 		"KZChangeRequest": "SpecialKZChangeRequest"
 	},
 	"APIModules": {
-		"kzcrLoad": "ApiKZChangeRequestLoad",
-		"kzcrSubmit": "ApiKZChangeRequestSubmit"
+		"kzcrModal": "ApiKZChangeRequestModal"
 	},
 	"config": {
 		"ReCaptchaV3SiteKey": "",

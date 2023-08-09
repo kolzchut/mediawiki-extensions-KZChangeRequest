@@ -1,10 +1,13 @@
-.kzcr-cancel {  /* container div */
+.kzcr-cancel,  /* container div */
+.kzcr-finish {
   margin: 1em 0;
 }
-#kzcr-cancel {  /* link */
+#kzcr-cancel,  /* link */
+#kzcr-finish {
   text-decoration: none;
   color: blue;
 }
-#kzcr-cancel:hover {  /* link */
+#kzcr-cancel:hover,  /* link */
+#kzcr-finish:hover {
   text-decoration: underline;
 }

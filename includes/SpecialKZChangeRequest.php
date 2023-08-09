@@ -6,6 +6,7 @@ use MediaWiki\MediaWikiServices;
 class SpecialKZChangeRequest extends UnlistedSpecialPage
 {
   private \Psr\Log\LoggerInterface $logger;
+  public $submissionSuccessful = false;
 
   function __construct()
   {
@@ -132,6 +133,7 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       return $this->msg('kzchangerequest-submission-error')->text();
 
     // Post-submission confirmation.
+    $this->submissionSuccessful = true;
     $output = $this->getOutput();
     $output->addHTML("<p class='kzcr-confirmation'>" . $this->msg('kzchangerequest-confirmation-message')->text() . "</p>");
     return true;
