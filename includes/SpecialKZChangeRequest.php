@@ -48,7 +48,10 @@ class SpecialKZChangeRequest extends UnlistedSpecialPage
       // Log warning.
       $this->logger->warning("Missing ReCaptchaV3SiteKey configuration");
     } else {
-      $output->addJsConfigVars(['reCaptchaV3SiteKey' => $reCaptchaSitekey]);
+      $output->addJsConfigVars([
+        'reCaptchaV3SiteKey' => $reCaptchaSitekey,
+        'kzcrWaitingMessage' => $this->msg('kzchangerequest-waiting')->text(),
+      ]);
       $output->addScript(
         '<script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSitekey . '"></script>'
       );

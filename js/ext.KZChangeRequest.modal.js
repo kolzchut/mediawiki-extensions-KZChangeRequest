@@ -4,20 +4,20 @@
  * 
  * Usage:
  * mw.loader.using('ext.KZChangeRequest.modal', function() {
- *   window.kzcrAjax($('#MODAL_CONTENT_AREA'), onCloseHandler);
+ *   window.kzcrAjax($('#MODAL_CONTENT_AREA'), onCloseHandler, onReadyHandler);
  * });
  */
-window.kzcrAjax = function(jqContentArea, onClose) {
+window.kzcrAjax = function (jqContentArea, onClose, onReady = null) {
   var articleId = mw.config.get('wgArticleId');
   var api = new mw.Api();
 
   // AJAX form submit handler.
-  var onSubmit = function(e) {
+  var onSubmit = function (e) {
     e.preventDefault();
-    var params = {action: 'kzcrModal'};
+    var params = { action: 'kzcrModal' };
     var formValues = $("#kzcrChangeRequestForm").serializeArray();
     for (var i = formValues.length - 1; i >= 0; i--) {
-      params[ formValues[i].name ] = formValues[i].value;
+      params[formValues[i].name] = formValues[i].value;
     }
     api.post(params).done(onApiResponse);
   };
@@ -32,6 +32,7 @@ window.kzcrAjax = function(jqContentArea, onClose) {
       // No form. Presumably confirmation page. Add a "Finish" button to close the modal.
       jqContentArea.append('<div class="kzcr-finish"><a href="#" id="kzcr-finish">' + data.finishMsg + '</a></div>');
       $('#kzcr-finish').click(onClose);
+      if (onReady !== null) onReady();
     }
     else {
       // Add a "Cancel" button to the form that closes the modal.
@@ -47,14 +48,15 @@ window.kzcrAjax = function(jqContentArea, onClose) {
       $("#kzcrChangeRequestForm").submit(onSubmit);
 
       // Invoke ResourceLoader to ensure modules are loaded.
-      mw.loader.using(data.modules, function() {
+      mw.loader.using(data.modules, function () {
         // Make certain the form alterations are made for reCAPTCHA. It's possible the form has been dynamically reloaded.
         window.kzcrAlterForm();
 
         // Add bottom scripts. This loads the reCAPTCHA.
         $('body').append(data.bottomScripts);
 
-        // Ready. Set focus on first form field.
+        // Ready. Fire onReady and set focus on first form field.
+        if (onReady !== null) onReady();
         $('textarea[name=wpkzcrRequest]').trigger('focus');
       });
     }
@@ -65,5 +67,5 @@ window.kzcrAjax = function(jqContentArea, onClose) {
     action: 'kzcrModal',
     articleId: articleId
   })
-  .done(onApiResponse);
+    .done(onApiResponse);
 };

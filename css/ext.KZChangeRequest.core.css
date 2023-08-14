@@ -5,3 +5,8 @@
   padding-right: 5%;
   padding-bottom: 1em;
 }
+
+#kzcrButton button:disabled {
+  background-color: gray;
+  border-color: gray;
+}
