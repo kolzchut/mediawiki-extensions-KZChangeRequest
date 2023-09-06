@@ -56,8 +56,8 @@ window.kzcrAjax = function (jqContentArea, onClose, onReady = null) {
         $('body').append(data.bottomScripts);
 
         // Ready. Fire onReady and set focus on first form field.
-        if (onReady !== null) onReady();
         $('textarea[name=wpkzcrRequest]').trigger('focus');
+        if (onReady !== null) onReady();
       });
     }
   };
