@@ -1,13 +1,15 @@
 .kzcr-cancel,  /* container div */
 .kzcr-finish {
-  margin: 1em 0;
+	margin: 1em 0;
 }
-#kzcr-cancel,  /* link */
-#kzcr-finish {
-  text-decoration: none;
-  color: blue;
+
+.kzcr-cancel a,  /* link */
+.kzcr-finish a {
+	text-decoration: none;
+	color: #00f;
 }
-#kzcr-cancel:hover,  /* link */
-#kzcr-finish:hover {
-  text-decoration: underline;
+
+.kzcr-cancel a:hover,  /* link */
+.kzcr-finish a:hover {
+	text-decoration: underline;
 }

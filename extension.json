@@ -8,13 +8,8 @@
 	"descriptionmsg": "kzchangerequest-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
-	"ExtensionMessagesFiles": {
-		"KZChangeRequestAliases": "KZChangeRequest.i18n.alias.php"
-	},
-	"MessagesDirs": {
-		"KZChangeRequest": [
-			"i18n"
-		]
+	"requires": {
+		"MediaWiki": ">= 1.35.0"
 	},
 	"AutoloadClasses": {
 		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php",
@@ -27,9 +22,9 @@
 		"kzcrModal": "ApiKZChangeRequestModal"
 	},
 	"config": {
-		"ReCaptchaV3SiteKey": "",
-		"RecaptchaV3Secret": "",
-		"JiraServiceDeskApi": {
+		"KZChangeRequestReCaptchaV3SiteKey": "",
+		"KZChangeRequestRecaptchaV3Secret": "",
+		"KZChangeRequestJiraServiceDeskApi": {
 			"user": "",
 			"password": "",
 			"project": "",
@@ -39,8 +34,16 @@
 			"shortLinkFormat": ""
 		}
 	},
-	"ConfigRegistry": {},
+	"HookHandlers": {},
 	"Hooks": {},
+	"ExtensionMessagesFiles": {
+		"KZChangeRequestAliases": "KZChangeRequest.i18n.alias.php"
+	},
+	"MessagesDirs": {
+		"KZChangeRequest": [
+			"i18n"
+		]
+	},
   "ResourceModules": {
     "ext.KZChangeRequest": {
         "localBasePath": "",

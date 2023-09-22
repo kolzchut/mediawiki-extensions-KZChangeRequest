@@ -1,12 +1,12 @@
 .kzcr-email.mw-htmlform-field-HTMLTextField,
 .kzcr-name.mw-htmlform-field-HTMLTextField {
-  display: inline-block !important;
-  width: 50%;
-  padding-right: 5%;
-  padding-bottom: 1em;
+	display: inline-block !important;
+	width: 50%;
+	padding-right: 5%;
+	padding-bottom: 1em;
 }
 
-#kzcrButton button:disabled {
-  background-color: gray;
-  border-color: gray;
+.mw-htmlform-submit-buttons .mw-htmlform-submit.oo-ui-widget.oo-ui-buttonElement button[ name='kzcrSubmit' ]:disabled {
+	background-color: #888;
+	border-color: #888;
 }
