@@ -19,6 +19,7 @@ window.kzcrAjax = function (jqContentArea, onClose, onReady = null) {
     for (var i = formValues.length - 1; i >= 0; i--) {
       params[formValues[i].name] = formValues[i].value;
     }
+		$('#kzcrButton button').prop('disabled', 'true');
     api.post(params).done(onApiResponse);
   };
 
