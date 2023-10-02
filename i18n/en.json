@@ -19,5 +19,7 @@
 	"kzchangerequest-finish": "Finish and close window",
 	"kzchangerequest-submission-error": "Sorry, due to an internal system error your request could not be submitted. Please try again later.",
 	"kzchangerequest-confirmation-message": "Thank you! Your request has been submitted.",
-	"kzchangerequest-modal-load-error": "Sorry, due to an internal system error a change request cannot be opened at this time. Please try again later."
+	"kzchangerequest-modal-load-error": "Sorry, due to an internal system error a change request cannot be opened at this time. Please try again later.",
+	"kzchangerequest-button-intro": "Sighted any inaccuracies? Have additional information or suggestions for this article?",
+	"kzchangerequest-button-label": "Send change proposal"
 }

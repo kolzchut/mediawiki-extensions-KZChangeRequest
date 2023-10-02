@@ -70,8 +70,7 @@ class ApiKZChangeRequestModal extends \ApiBase {
 			// @TODO: is there a more elegant way to ensure all form-related modules are loaded
 			// without pulling in modules the form doesn't need?
 			$result->addValue( null, 'modules', $output->getModules() + [
-				'mediawiki.widgets.styles', 'oojs-ui-core.icons', 'oojs-ui-core.styles',
-				'oojs-ui.styles.indicators', 'mediawiki.htmlform.ooui.styles'
+				'mediawiki.widgets.styles', 'oojs-ui.styles.indicators', 'mediawiki.htmlform.ooui.styles'
 			] );
 			$result->addValue( null, 'bottomScripts', $output->getBottomScripts() );
 			$result->addValue( null, 'cancelMsg', $this->msg( 'kzchangerequest-cancel' ) );

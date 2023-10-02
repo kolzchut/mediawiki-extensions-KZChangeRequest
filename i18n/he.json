@@ -19,5 +19,7 @@
 	"kzchangerequest-finish": "סיים וסגור חלון",
 	"kzchangerequest-submission-error": "סליחה, בגלל שגיאה פנימית במערכת בקשתך לא נשלחה. נא לנסות שוב בזמן אחר.",
 	"kzchangerequest-confirmation-message": "תודה רבה. הבקשה שלך נשלחה בהצלחה.",
-	"kzchangerequest-modal-load-error": "סליחה, בגלל שגיאה פנימית במערכת לא ניתן ברגע זה לפתוח הצעת שינוי. נא לנסות שוב בזמן אחר."
+	"kzchangerequest-modal-load-error": "סליחה, בגלל שגיאה פנימית במערכת לא ניתן ברגע זה לפתוח הצעת שינוי. נא לנסות שוב בזמן אחר.",
+	"kzchangerequest-button-intro": "יש לכם מידע נוסף או הצעות לעדכון ערך זה?",
+	"kzchangerequest-button-label": "שלחו הצעת שינוי"
 }

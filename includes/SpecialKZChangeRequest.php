@@ -63,7 +63,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		}
 
 		// ResourceLoader modules: load the form's JS and CSS
-		$output->addModules( 'ext.KZChangeRequest' );
+		$output->addModules( 'ext.KZChangeRequest.form' );
 
 		// Build the form
 		$htmlForm = \HTMLForm::factory( 'ooui', $form, $this->getContext() );

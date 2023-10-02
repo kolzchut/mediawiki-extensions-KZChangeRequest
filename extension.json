@@ -12,6 +12,8 @@
 		"MediaWiki": ">= 1.35.0"
 	},
 	"AutoloadClasses": {
+		"KZChangeRequest": "KZChangeRequest.php",
+		"KZChangeRequestHooks": "KZChangeRequestHooks.php",
 		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php",
 		"ApiKZChangeRequestModal": "includes/ApiKZChangeRequestModal.php"
 	},
@@ -35,7 +37,9 @@
 		}
 	},
 	"HookHandlers": {},
-	"Hooks": {},
+	"Hooks": {
+		"BeforePageDisplay": "KZChangeRequestHooks::onBeforePageDisplay"
+	},
 	"ExtensionMessagesFiles": {
 		"KZChangeRequestAliases": "KZChangeRequest.i18n.alias.php"
 	},
@@ -44,19 +48,31 @@
 			"i18n"
 		]
 	},
-  "ResourceModules": {
-    "ext.KZChangeRequest": {
-        "localBasePath": "resources/ext.KZChangeRequest.core",
-        "remoteExtPath": "KZChangeRequest",
-        "scripts": ["ext.KZChangeRequest.core.js"],
-        "styles": ["ext.KZChangeRequest.core.css"]
-    },
-    "ext.KZChangeRequest.modal": {
-      "localBasePath": "resources/ext.KZChangeRequest.modal",
-      "remoteExtPath": "KZChangeRequest",
+	"ResourceModules": {
+		"ext.KZChangeRequest.form": {
+				"localBasePath": "resources/ext.KZChangeRequest.form",
+				"remoteExtPath": "KZChangeRequest",
+				"scripts": ["ext.KZChangeRequest.form.js"],
+				"styles": ["ext.KZChangeRequest.form.css"]
+		},
+		"ext.KZChangeRequest.button": {
+			"localBasePath": "resources/ext.KZChangeRequest.button",
+			"remoteExtPath": "KZChangeRequest",
+			"scripts": ["ext.KZChangeRequest.button.js"],
+			"styles": ["ext.KZChangeRequest.button.css"],
+			"dependencies": [
+				"mediawiki.jqueryMsg",
+				"mediawiki.api",
+				"oojs-ui-widgets",
+				"oojs-ui-windows"
+			]
+		},
+		"ext.KZChangeRequest.modal": {
+			"localBasePath": "resources/ext.KZChangeRequest.modal",
+			"remoteExtPath": "KZChangeRequest",
 			"scripts": ["ext.KZChangeRequest.modal.js"],
-      "styles": ["ext.KZChangeRequest.modal.css"]
-    }
-  },
-  "manifest_version": 1
+			"styles": ["ext.KZChangeRequest.modal.css"]
+		}
+	},
+	"manifest_version": 1
 }
