@@ -46,16 +46,16 @@
 	},
   "ResourceModules": {
     "ext.KZChangeRequest": {
-        "localBasePath": "",
+        "localBasePath": "resources/ext.KZChangeRequest.core",
         "remoteExtPath": "KZChangeRequest",
-        "scripts": ["js/ext.KZChangeRequest.core.js"],
-        "styles": ["css/ext.KZChangeRequest.core.css"]
+        "scripts": ["ext.KZChangeRequest.core.js"],
+        "styles": ["ext.KZChangeRequest.core.css"]
     },
     "ext.KZChangeRequest.modal": {
-      "localBasePath": "",
+      "localBasePath": "resources/ext.KZChangeRequest.modal",
       "remoteExtPath": "KZChangeRequest",
-			"scripts": ["js/ext.KZChangeRequest.modal.js"],
-      "styles": ["css/ext.KZChangeRequest.modal.css"]
+			"scripts": ["ext.KZChangeRequest.modal.js"],
+      "styles": ["ext.KZChangeRequest.modal.css"]
     }
   },
   "manifest_version": 1
