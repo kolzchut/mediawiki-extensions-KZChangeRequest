@@ -52,7 +52,6 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		} else {
 			$output->addJsConfigVars( [
 				'KZChangeRequestReCaptchaV3SiteKey' => $reCaptchaSitekey,
-				'kzcrWaitingMessage' => $this->msg( 'kzchangerequest-waiting' )->text(),
 			] );
 			$output->addScript(
 				'<script src="https://www.google.com/recaptcha/api.js?render=' . $reCaptchaSitekey . '"></script>'

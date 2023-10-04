@@ -10,7 +10,7 @@ window.kzcrAlterForm = function () {
 	$( '#kzcrButton button' )
 		.addClass( 'g-recaptcha' )
 		.attr( 'data-sitekey', mw.config.get( 'KZChangeRequestReCaptchaV3SiteKey' ) )
-		.attr( 'data-waitmsg', mw.config.get( 'kzcrWaitingMessage' ) );
+		.attr( 'data-waitmsg', mw.message( 'kzchangerequest-waiting' ).text() );
 
 	// Manually define a form element to return the reCAPTCHA token.
 	// We will set this manually below.

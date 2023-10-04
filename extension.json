@@ -53,7 +53,8 @@
 				"localBasePath": "resources/ext.KZChangeRequest.form",
 				"remoteExtPath": "KZChangeRequest",
 				"scripts": ["ext.KZChangeRequest.form.js"],
-				"styles": ["ext.KZChangeRequest.form.css"]
+				"styles": ["ext.KZChangeRequest.form.css"],
+				"messages": ["kzchangerequest-waiting"]
 		},
 		"ext.KZChangeRequest.button": {
 			"localBasePath": "resources/ext.KZChangeRequest.button",
