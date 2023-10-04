@@ -85,7 +85,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// Verify valid article and get categories
 		$page = $this->getPage( $postData['kzcrArticleId'] );
 		if ( !$page ) {
-			return $this->msg( 'kzchangerequest-submission-error' )->text();
+			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
 		}
 		$pageTitle = $page->getTitle()->getText();
 		$pageCategories = [];
@@ -118,11 +118,11 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 					'requestTypeId' => $jiraConfig['requestTypeId'] ?? ''
 				]
 			);
-			return $this->msg( 'kzchangerequest-submission-error' )->text();
+			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
 		}
 		$customerId = $this->jiraGetCustomer( $postData['kzcrContactEmail'], $jiraConfig );
 		if ( $customerId === false ) {
-			return $this->msg( 'kzchangerequest-submission-error' )->text();
+			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
 		}
 
 		// Open Jira Service Desk ticket
@@ -163,14 +163,14 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		}
 		$success = $this->jiraOpenTicket( $issueData, $jiraConfig );
 		if ( !$success ) {
-			return $this->msg( 'kzchangerequest-submission-error' )->text();
+			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
 		}
 
 		// Post-submission confirmation
 		$this->submissionSuccessful = true;
 		$output = $this->getOutput();
 		$output->addHTML(
-			"<p class='kzcr-confirmation'>" . $this->msg( 'kzchangerequest-confirmation-message' )->text() . "</p>"
+			"<p class='kzcr-confirmation'>" . $this->msg( 'kzchangerequest-confirmation-message' )->escaped() . "</p>"
 		);
 		return true;
 	}
@@ -202,8 +202,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			'kzcrIntro' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-intro',
-				'default' => '<h4>' . $this->msg( 'kzchangerequest-intro-1' )->text() . '</h4>'
-					. '<p>' . $this->msg( 'kzchangerequest-intro-2' )->text() . '</p>',
+				'default' => '<h4>' . $this->msg( 'kzchangerequest-intro-1' )->escaped() . '</h4>'
+					. '<p>' . $this->msg( 'kzchangerequest-intro-2' )->escaped() . '</p>',
 				'raw' => true,
 			],
 			'kzcrPageTitleInfo' => [
@@ -227,8 +227,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			'kzcrContactIntro' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-contact-intro',
-				'default' => '<h4>' . $this->msg( 'kzchangerequest-contact-intro-1' )->text() . '</h4>'
-					. '<p>' . $this->msg( 'kzchangerequest-contact-intro-2' )->text() . '</p>',
+				'default' => '<h4>' . $this->msg( 'kzchangerequest-contact-intro-1' )->escaped() . '</h4>'
+					. '<p>' . $this->msg( 'kzchangerequest-contact-intro-2' )->escaped() . '</p>',
 				'raw' => true,
 			],
 			'kzcrContactName' => [
@@ -245,7 +245,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			'kzcrNotice' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-notice',
-				'default' => '<p>' . $this->msg( 'kzchangerequest-notice' )->text() . '</p>',
+				'default' => '<p>' . $this->msg( 'kzchangerequest-notice' )->escaped() . '</p>',
 				'raw' => true,
 			],
 		];
