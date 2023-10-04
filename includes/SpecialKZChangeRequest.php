@@ -270,15 +270,15 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// Note this is added to the submission directly by reCAPTCHA js and is not processed by
 		// mediawiki as part of the HTMLForm
 		$request = $this->getRequest();
-		parse_str( $request->getRawPostString(), $postValues );
-		if ( empty( $postValues['g-recaptcha-response'] ) ) {
+		$recaptchaResponse = $request->getRawVal( 'g-recaptcha-response' );
+		if ( empty( $recaptchaResponse ) ) {
 			$this->logger->error( "ReCAPTCHA didn't return response from client side" );
 			return false;
 		}
 
 		// Callout to reCAPTCHA v3 to validate response from the client side
 		$data = [
-			'response' => $postValues['g-recaptcha-response'],
+			'response' => $recaptchaResponse,
 			'secret' => $secret,
 			'remoteip' => $request->getIP(),
 		];
