@@ -127,7 +127,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 
 		// Open Jira Service Desk ticket
 		$language = $this->getLanguage();
-		$languageName = $this->getLanguageName( $language->mCode );
+		$languageName = MediaWikiServices::getInstance()->getLanguageNameUtils()
+			->getLanguageName( $language->mCode, 'en' );
 		$issueData = [
 			'serviceDeskId' => $serviceDeskId,
 			'requestTypeId' => $requestTypeId,
@@ -249,26 +250,6 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				'raw' => true,
 			],
 		];
-	}
-
-	/**
-	 * Utility to return English-language names corresponding to select language codes.
-	 * @param string|null $mCode Two-character language code
-	 * @return string Language name in English
-	 */
-	private function getLanguageName( $mCode ) {
-		switch ( $mCode ) {
-			case 'ar':
-				return 'Arabic';
-			case 'en':
-				return 'English';
-			case 'he':
-				return 'Hebrew';
-			case 'ru':
-				return 'Russian';
-			default:
-				return 'Other';
-		}
 	}
 
 	/**
