@@ -1,9 +1,16 @@
 .kzcr-email.mw-htmlform-field-HTMLTextField,
 .kzcr-name.mw-htmlform-field-HTMLTextField {
-	display: inline-block !important;
-	width: 50%;
-	padding-right: 5%;
+	display: inline-block;
 	padding-bottom: 1em;
+}
+
+.kzcr-name.mw-htmlform-field-HTMLTextField {
+	width: 51%;
+	padding-right: 4%;
+}
+
+.kzcr-email.mw-htmlform-field-HTMLTextField {
+	width: 49%;
 }
 
 .mw-htmlform-submit-buttons .mw-htmlform-submit.oo-ui-widget.oo-ui-buttonElement button[ name='kzcrSubmit' ]:disabled {
