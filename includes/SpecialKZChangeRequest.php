@@ -231,7 +231,34 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 					. '<p>' . $this->msg( 'kzchangerequest-contact-intro-2' )->text() . '</p>',
 				'raw' => true,
 			],
-			'kzcrContactName' => [
+			'fieldRowNameEmail' => [
+				'type' => 'info',
+				'rawrow' => true,
+				'default' => new \OOUI\HorizontalLayout( [ 'items' => [
+					new OOUI\FieldLayout(
+						new \OOUI\TextInputWidget( [
+							'name' => 'kzcrContactName',
+							'classes' => [ 'kzcr-name' ],
+						] ),
+						[
+							'label' => $this->msg( 'kzchangerequest-contact-name' )->text(),
+							'align' => 'top',
+						]
+					),
+					new OOUI\FieldLayout(
+						new \OOUI\TextInputWidget( [
+							'name' => 'kzcrContactEmail',
+							'classes' => [ 'kzcr-email' ],
+							'required' => true,
+						] ),
+						[
+							'label' => $this->msg( 'kzchangerequest-contact-email' )->text(),
+							'align' => 'top',
+						]
+					),
+				] ] )
+			],
+/* 			'kzcrContactName' => [
 				'type' => 'text',
 				'cssclass' => 'kzcr-name',
 				'label-message' => 'kzchangerequest-contact-name',
@@ -242,7 +269,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				'cssclass' => 'kzcr-email',
 				'required' => true,
 			],
-			'kzcrNotice' => [
+ */			'kzcrNotice' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-notice',
 				'default' => '<p>' . $this->msg( 'kzchangerequest-notice' )->text() . '</p>',
