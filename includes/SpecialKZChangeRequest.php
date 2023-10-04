@@ -36,7 +36,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// Load form structure
 		$articleId = $postValues['wpkzcrArticleId'] ?? $request->getText( 'articleId' );
 		$page = $this->getPage( $articleId ?? 0 );
-		$pageTitle = !empty( $page ) ? $page->getTitle()->getText() : 'unknown';
+		$pageTitle = !empty( $page ) ? $page->getTitle()->getText()
+			: $this->msg( 'kzchangerequest-pageunknown' )->text();
 		$form = $this->getFormStructure( $pageTitle );
 		if ( !empty( $articleId ) ) {
 			$form['kzcrArticleId']['default'] = $articleId;
