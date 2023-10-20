@@ -205,8 +205,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			'kzcrIntro' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-intro',
-				'default' => '<h4>' . $this->msg( 'kzchangerequest-intro-1' )->escaped() . '</h4>'
-					. '<p>' . $this->msg( 'kzchangerequest-intro-2' )->escaped() . '</p>',
+				'default' => Html::element( 'h4', [], $this->msg( 'kzchangerequest-intro-1' )->text() )
+					. Html::element( 'p', [], $this->msg( 'kzchangerequest-intro-2' )->text() ),
 				'raw' => true,
 			],
 			'kzcrPageTitleInfo' => [
@@ -230,8 +230,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			'kzcrContactIntro' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-contact-intro',
-				'default' => '<h4>' . $this->msg( 'kzchangerequest-contact-intro-1' )->escaped() . '</h4>'
-					. '<p>' . $this->msg( 'kzchangerequest-contact-intro-2' )->escaped() . '</p>',
+				'default' => Html::element( 'h4', [], $this->msg( 'kzchangerequest-contact-intro-1' )->text() )
+					. Html::element( 'p', [], $this->msg( 'kzchangerequest-contact-intro-2' )->text() ),
 				'raw' => true,
 			],
 			'kzcrContactName' => [
@@ -243,12 +243,12 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				'type' => 'email',
 				'label-message' => 'kzchangerequest-contact-email',
 				'cssclass' => 'kzcr-email',
-				'required' => true,
+				'required' => false,
 			],
 			'kzcrNotice' => [
 				'type' => 'info',
 				'cssclass' => 'kzcr-notice',
-				'default' => '<p>' . $this->msg( 'kzchangerequest-notice' )->escaped() . '</p>',
+				'default' => Html::element( 'p', [], $this->msg( 'kzchangerequest-notice' )->text() ),
 				'raw' => true,
 			],
 		];
