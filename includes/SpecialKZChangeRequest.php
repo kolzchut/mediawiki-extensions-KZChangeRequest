@@ -120,15 +120,17 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			);
 			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
 		}
+		// Check for an existing customer ID.
+		// We can't create new customers from here - it requires extensive permissions, so we do
+		// that with a Jira automation. However, the automation fails if we pass it the email of an
+		// existing company.
+		// Therefore, we check if the customer already exists and and set the customer ID in the request
 		$customerId = $this->jiraGetCustomer( $postData['kzcrContactEmail'], $jiraConfig );
-		if ( $customerId === false ) {
-			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
-		}
-
 		// Open Jira Service Desk ticket
 		$language = $this->getLanguage();
 		$languageName = MediaWikiServices::getInstance()->getLanguageNameUtils()
 			->getLanguageName( $language->mCode, 'en' );
+
 		$issueData = [
 			'serviceDeskId' => $serviceDeskId,
 			'requestTypeId' => $requestTypeId,
