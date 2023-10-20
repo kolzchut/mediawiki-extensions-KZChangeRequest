@@ -3,15 +3,15 @@
 class KZChangeRequest {
 
 	/**
-	 * @return Markup for the Change Request button with intro text.
+	 * @return string HTML markup for the Change Request button
 	 */
-	public static function createChangeRequestButton() {
-		$templateParser = new TemplateParser( __DIR__ . '/templates' );
-
-		return $templateParser->processTemplate( 'change-request-button', [
-			'buttonIntro'  => wfMessage( 'kzchangerequest-button-intro' ),
-			'buttonLabel' => wfMessage( 'kzchangerequest-button-label' ),
-		] );
+	public static function createChangeRequestButton( $articleId = null ): string {
+		$urlParams = $articleId ? [ 'articleId' => $articleId ] : "";
+		$url = SpecialPage::getTitleFor( 'KZChangeRequest' )->getLocalURL( $urlParams );
+		return Html::element( 'a',
+			[ 'class' => 'btn ranking-btn changerequest', 'href' => $url ],
+			wfMessage( 'kzchangerequest-button-label' )
+		);
 	}
 
 }
