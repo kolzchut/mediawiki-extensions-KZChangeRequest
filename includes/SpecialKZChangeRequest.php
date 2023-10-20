@@ -89,8 +89,9 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		}
 		$pageTitle = $page->getTitle()->getText();
 		$pageCategories = [];
+		// use getDBkey(), because Jira labels can't contain spaces
 		foreach ( $page->getCategories() as $category ) {
-			$pageCategories[] = $category->getText();
+			$pageCategories[] = $category->getDBkey();
 		}
 
 		// Get reCAPTCHA v3 score
