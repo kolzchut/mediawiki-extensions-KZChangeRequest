@@ -1,5 +1,3 @@
-/* global window, mw, $ */
-
 /**
  * Provide an AJAX modal loader for the change request form as a
  * function callable by an external extension or skin.
@@ -33,7 +31,7 @@ window.kzcrAjax = function ( jqContentArea, onClose, onReady ) {
 	// AJAX content loader.
 	onApiResponse = function ( data ) {
 		// Load HTML into content area.
-		jqContentArea.html( '<header><h1>' + data.title + '</h1></header>' + data.html );
+		jqContentArea.html( data.html );
 
 		// Is the form displayed?
 		if ( $( '#kzcrChangeRequestForm' ).length === 0 ) {

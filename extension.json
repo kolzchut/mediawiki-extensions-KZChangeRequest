@@ -66,6 +66,9 @@
 				"mediawiki.api",
 				"oojs-ui-widgets",
 				"oojs-ui-windows"
+			],
+			"messages": [
+				"kzchangerequest"
 			]
 		},
 		"ext.KZChangeRequest.modal": {

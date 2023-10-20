@@ -1,4 +1,4 @@
-/* global window, mw, $, grecaptcha */
+/* global grecaptcha */
 
 window.kzcrAlterForm = function () {
 	// Don't make the same alterations twice.

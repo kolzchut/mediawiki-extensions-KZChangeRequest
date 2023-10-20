@@ -1,5 +1,3 @@
-/* global window, document, mw, OO, $ */
-
 $( function () {
 	mw.loader.using( [ 'mediawiki.api', 'oojs-ui-widgets', 'oojs-ui-windows' ], function () {
 		// When the Change Request button is pressed open the form in a modal dialog.
@@ -15,7 +13,7 @@ $( function () {
 
 			// Minimal dialog chrome, just a close button.
 			// Title and submit button will appear (in the user's language) in the content area.
-			ModalDialog.static.title = '';
+			ModalDialog.static.title = mw.msg( 'kzchangerequest' );
 			ModalDialog.static.actions = [
 				{
 					label: 'Cancel',
