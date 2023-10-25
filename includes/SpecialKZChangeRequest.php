@@ -137,29 +137,33 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		$languageName = MediaWikiServices::getInstance()->getLanguageNameUtils()
 			->getLanguageName( $language->mCode, 'en' );
 
-		$issueData = [
-			'serviceDeskId' => $serviceDeskId,
-			'requestTypeId' => $requestTypeId,
-			'raiseOnBehalfOf' => $customerId ?? null,
-			'requestFieldValues' => [
-				'summary' => $pageTitle,
-				'description' => $postData['kzcrRequest'],
-				// "Language"
-				'customfield_10305' => [ 'value' => $languageName ],
-				// "Page Title"
-				'customfield_10201' => $pageTitle,
-				// "Contact Name"
-				'customfield_10202' => $postData['kzcrContactName'],
-				// "Contact Email"
-				'customfield_10203' => $email,
-				// "content_area" @TODO: is this deprecated?
-				'customfield_11691' => '',
-				// "wikipage_categories"
-				'customfield_10800' => $pageCategories,
-				// "ReCAPTCHA Score"
-				'customfield_11714' => ( $recaptchaScore === false ) ? -1 : $recaptchaScore,
-			],
+		$fields = [
+			'summary' => $pageTitle,
+			'description' => $postData['kzcrRequest'],
+			// "Language"
+			'customfield_10305' => [ 'value' => $languageName ],
+			// "Page Title"
+			'customfield_10201' => $pageTitle,
+			// "Contact Name"
+			'customfield_10202' => $postData['kzcrContactName'],
+			// "Contact Email"
+			'customfield_10203' => $email,
+			// "content_area" @TODO: is this deprecated?
+			'customfield_11691' => '',
+			// "wikipage_categories"
+			'customfield_10800' => $pageCategories,
+			// "ReCAPTCHA Score"
+			'customfield_11714' => ( $recaptchaScore === false ) ? -1 : $recaptchaScore,
 		];
+
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'ArticleContentArea' ) ) {
+			$contentArea = \MediaWiki\Extension\ArticleContentArea\ArticleContentArea::getArticleContentArea(
+				$page->getTitle()
+			);
+			// customfield_11691 "content_area"
+			$fields['customfield_11691'] = $contentArea;
+		}
+
 		$linkFormat = $jiraConfig['shortLinkFormat'];
 		if ( !empty( $linkFormat ) && !empty( $postData['kzcrArticleId'] ) ) {
 			$link = str_replace(
@@ -168,8 +172,16 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				$linkFormat
 			);
 			// "Link"
-			$issueData['requestFieldValues']['customfield_11689'] = $link;
+			$fields['customfield_11689'] = $link;
 		}
+
+		$issueData = [
+			'serviceDeskId' => $serviceDeskId,
+			'requestTypeId' => $requestTypeId,
+			'raiseOnBehalfOf' => $customerId ?? null,
+			'requestFieldValues' => $fields
+		];
+
 		$success = $this->jiraOpenTicket( $issueData, $jiraConfig );
 		if ( !$success ) {
 			return $this->msg( 'kzchangerequest-submission-error' )->escaped();
