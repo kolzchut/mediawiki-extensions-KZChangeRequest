@@ -1,5 +1,5 @@
 $( function () {
-	mw.loader.using( [ 'mediawiki.api', 'oojs-ui-widgets', 'oojs-ui-windows' ], function () {
+	mw.loader.using( [ 'mediawiki.api', 'oojs-ui-widgets', 'oojs-ui-windows', 'mediawiki.jqueryMsg' ], function () {
 		// When the Change Request button is pressed open the form in a modal dialog.
 		// eslint-disable-next-line no-jquery/no-global-selector
 		$( '.changerequest-btn' ).on( 'click', function ( e ) {

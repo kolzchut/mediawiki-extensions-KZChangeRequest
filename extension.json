@@ -61,12 +61,6 @@
 			"remoteExtPath": "KZChangeRequest",
 			"scripts": [ "ext.KZChangeRequest.button.js" ],
 			"styles": [ "ext.KZChangeRequest.button.css" ],
-			"dependencies": [
-				"mediawiki.jqueryMsg",
-				"mediawiki.api",
-				"oojs-ui-widgets",
-				"oojs-ui-windows"
-			],
 			"messages": [
 				"kzchangerequest"
 			]
