@@ -30,14 +30,20 @@ window.kzcrAjax = function ( jqContentArea, onClose, onReady ) {
 
 	// AJAX content loader.
 	onApiResponse = function ( data ) {
+		var button;
+
 		// Load HTML into content area.
 		jqContentArea.html( data.html );
 
 		// Is the form displayed?
 		if ( $( '#kzcrChangeRequestForm' ).length === 0 ) {
 			// No form. Presumably confirmation page. Add a "Finish" button to close the modal.
-			jqContentArea.append( '<div class="kzcr-finish"><a href="#" id="kzcr-finish">' + data.finishMsg + '</a></div>' );
-			$( '#kzcr-finish' ).click( onClose );
+			button = new OO.ui.ButtonWidget( {
+				label: data.finishMsg
+			} );
+			button.on( 'click', onClose );
+			jqContentArea.append( button.$element );
+
 			if ( onReady !== null ) {
 				onReady();
 			}

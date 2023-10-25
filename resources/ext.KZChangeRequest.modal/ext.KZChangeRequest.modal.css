@@ -3,13 +3,12 @@
 	margin: 1em 0;
 }
 
-.kzcr-cancel a,  /* link */
-.kzcr-finish a {
+/* link */
+.kzcr-cancel a {
 	text-decoration: none;
 	color: #00f;
 }
 
-.kzcr-cancel a:hover,  /* link */
-.kzcr-finish a:hover {
+.kzcr-cancel a:hover {  /* link */
 	text-decoration: underline;
 }
