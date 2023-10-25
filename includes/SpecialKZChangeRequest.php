@@ -2,14 +2,16 @@
 
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use Psr\Log\LoggerInterface;
 
 class SpecialKZChangeRequest extends \UnlistedSpecialPage {
-  private \Psr\Log\LoggerInterface $logger;
+	/** @var LoggerInterface */
+	private LoggerInterface $logger;
 
 	/**
 	 * @var bool Expose success state
 	 */
-  public $submissionSuccessful = false;
+  public bool $submissionSuccessful = false;
 
 	public function __construct() {
 		parent::__construct( 'KZChangeRequest' );
@@ -219,7 +221,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 	 * @param string|null $pageTitle Article title of the relevant wiki page
 	 * @return array
 	 */
-	private function getFormStructure( $pageTitle = '' ) {
+	private function getFormStructure( $pageTitle = '' ): array {
 		return [
 			'kzcrIntro' => [
 				'type' => 'info',
@@ -306,7 +308,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		$url = 'https://www.google.com/recaptcha/api/siteverify';
 		$url = wfAppendQuery( $url, $data );
 		$httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
-			->create( $url, [ 'method' => 'POST' ], __METHOD__ );
+			->create( $url, [ 'method' => 'POST' ] );
 		try {
 			$status = $httpRequest->execute();
 			if ( !$status->isOK() ) {
@@ -316,7 +318,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				);
 				return false;
 			}
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->logger->error(
 				"ReCAPTCHA validation callout threw exception with message: {exceptionMsg}",
 				[ 'exceptionMsg' => $e->getMessage() ]
@@ -324,7 +326,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			return false;
 		}
 		$json = $httpRequest->getContent();
-		$response = \FormatJson::decode( $json, true );
+		$response = FormatJson::decode( $json, true );
 		if ( !$response ) {
 			$this->logger->error(
 				"ReCAPTCHA validation failed to parse JSON: {json}",
@@ -365,7 +367,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		];
 		$url = wfAppendQuery( $calloutUrl, $queryData );
 		$httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
-			->create( $url, [ 'username' => $jiraConfig['user'], 'password' => $jiraConfig['password'] ], __METHOD__ );
+			->create( $url, [ 'username' => $jiraConfig['user'], 'password' => $jiraConfig['password'] ] );
 		$httpRequest->setHeader( 'Accept', 'application/json' );
 		$httpRequest->setHeader( 'Content-Type', 'application/json' );
 		$httpRequest->setHeader( 'X-ExperimentalApi', 'opt-in' );
@@ -378,7 +380,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				);
 				return false;
 			}
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->logger->error(
 				"Jira customer query callout threw exception with message: {exceptionMsg}",
 				[ 'exceptionMsg' => $e->getMessage() ]
@@ -386,7 +388,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			return false;
 		}
 		$json = $httpRequest->getContent();
-		$response = \FormatJson::decode( $json, true );
+		$response = FormatJson::decode( $json, true );
 		if ( !$response ) {
 			$this->logger->error(
 				"Jira customer query failed to parse JSON: {json}",
@@ -400,21 +402,20 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 
 	/**
 	 * Callout to open new Jira Service Desk ticket.
-	 * @param string $issueData Issue parameters to send to Jira
+	 * @param array $issueData Issue parameters to send to Jira
 	 * @param array $jiraConfig
 	 * @return mixed Return the JSON-decoded response from Jira on success, FALSE on failure
 	 */
 	private function jiraOpenTicket( $issueData, $jiraConfig ) {
 		$calloutUrl = $jiraConfig['server'] . '/rest/servicedeskapi/request';
-		$postJson = \FormatJson::encode( $issueData );
+		$postJson = FormatJson::encode( $issueData );
 		$httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
 			->create( $calloutUrl, [
 				'method' => 'POST',
 				'postData' => $postJson,
 				'username' => $jiraConfig['user'],
 				'password' => $jiraConfig['password']
-			],
-			__METHOD__
+			]
 		);
 		$httpRequest->setHeader( 'Accept', 'application/json' );
 		$httpRequest->setHeader( 'Content-Type', 'application/json' );
@@ -427,7 +428,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				);
 				return false;
 			}
-		} catch ( \Exception $e ) {
+		} catch ( Exception $e ) {
 			$this->logger->error(
 				"Jira open ticket callout threw exception with message: {exceptionMsg}",
 				[ 'exceptionMsg' => $e->getMessage() ]
@@ -435,7 +436,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 			return false;
 		}
 		$json = $httpRequest->getContent();
-		$response = \FormatJson::decode( $json, true );
+		$response = FormatJson::decode( $json, true );
 		if ( !$response ) {
 			$this->logger->error(
 				"Jira open ticket callout failed to parse JSON: {json}",

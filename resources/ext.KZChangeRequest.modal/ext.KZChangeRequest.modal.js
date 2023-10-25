@@ -50,7 +50,7 @@ window.kzcrAjax = function ( jqContentArea, onClose, onReady ) {
 		} else {
 			// Add a "Cancel" button to the form that closes the modal.
 			jqContentArea.append( '<div class="kzcr-cancel"><a href="#" id="kzcr-cancel">' + data.cancelMsg + '</a></div>' );
-			$( '#kzcr-cancel' ).click( onClose );
+			$( '#kzcr-cancel' ).on( 'click', onClose );
 
 			// Add config variables to mw.config
 			for ( var name in data.config ) {
@@ -58,7 +58,7 @@ window.kzcrAjax = function ( jqContentArea, onClose, onReady ) {
 			}
 
 			// Attach AJAXian submit handler to form.
-			$( '#kzcrChangeRequestForm' ).submit( onSubmit );
+			$( '#kzcrChangeRequestForm' ).on( 'submit', onSubmit );
 
 			// Invoke ResourceLoader to ensure modules are loaded.
 			mw.loader.using( data.modules, function () {

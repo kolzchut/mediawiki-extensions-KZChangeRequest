@@ -50,17 +50,17 @@
 	},
 	"ResourceModules": {
 		"ext.KZChangeRequest.form": {
-				"localBasePath": "resources/ext.KZChangeRequest.form",
-				"remoteExtPath": "KZChangeRequest",
-				"scripts": ["ext.KZChangeRequest.form.js"],
-				"styles": ["ext.KZChangeRequest.form.css"],
-				"messages": ["kzchangerequest-waiting"]
+			"localBasePath": "resources/ext.KZChangeRequest.form",
+			"remoteExtPath": "KZChangeRequest",
+			"scripts": [ "ext.KZChangeRequest.form.js" ],
+			"styles": [ "ext.KZChangeRequest.form.css" ],
+			"messages": [ "kzchangerequest-waiting" ]
 		},
 		"ext.KZChangeRequest.button": {
 			"localBasePath": "resources/ext.KZChangeRequest.button",
 			"remoteExtPath": "KZChangeRequest",
-			"scripts": ["ext.KZChangeRequest.button.js"],
-			"styles": ["ext.KZChangeRequest.button.css"],
+			"scripts": [ "ext.KZChangeRequest.button.js" ],
+			"styles": [ "ext.KZChangeRequest.button.css" ],
 			"dependencies": [
 				"mediawiki.jqueryMsg",
 				"mediawiki.api",
@@ -74,8 +74,8 @@
 		"ext.KZChangeRequest.modal": {
 			"localBasePath": "resources/ext.KZChangeRequest.modal",
 			"remoteExtPath": "KZChangeRequest",
-			"scripts": ["ext.KZChangeRequest.modal.js"],
-			"styles": ["ext.KZChangeRequest.modal.css"]
+			"scripts": [ "ext.KZChangeRequest.modal.js" ],
+			"styles": [ "ext.KZChangeRequest.modal.css" ]
 		}
 	},
 	"manifest_version": 1

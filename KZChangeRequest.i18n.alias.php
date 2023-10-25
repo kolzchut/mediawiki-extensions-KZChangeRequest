@@ -4,9 +4,9 @@ $specialPageAliases = [];
 
 /** English (English) */
 $specialPageAliases['en'] = [
-  'KZChangeRequest' => ['KZChangeRequest', 'Change Request']
+  'KZChangeRequest' => [ 'KZChangeRequest', 'Change Request' ]
 ];
 
 $specialPageAliases['he'] = [
-  'KZChangeRequest' => ['הצעת_שינוי']
+  'KZChangeRequest' => [ 'הצעת_שינוי' ]
 ];

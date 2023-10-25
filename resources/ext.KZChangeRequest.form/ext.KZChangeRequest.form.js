@@ -1,13 +1,14 @@
 /* global grecaptcha */
 
 window.kzcrAlterForm = function () {
+	var $kzcrButton = $( '#kzcrButton button' );
 	// Don't make the same alterations twice.
-	if ( $( '#kzcrButton button' ).hasClass( 'g-recaptcha' ) ) {
+	if ( $kzcrButton.hasClass( 'g-recaptcha' ) ) {
 		return;
 	}
 
 	// Prepare the Change Request form's submit button for reCAPTCHA
-	$( '#kzcrButton button' )
+	$kzcrButton
 		.addClass( 'g-recaptcha' )
 		.attr( 'data-sitekey', mw.config.get( 'KZChangeRequestReCaptchaV3SiteKey' ) )
 		.attr( 'data-waitmsg', mw.message( 'kzchangerequest-waiting' ).text() );
@@ -22,8 +23,10 @@ $( window.kzcrAlterForm );
 // To avoid race conditions, define all grecaptcha-dependent logic here.
 // It will be called after the reCAPTCHA js is loaded.
 window.grecaptchaOnJs = function () {
-	var form = $( '#kzcrChangeRequestForm' ).get( 0 );
-	$( '#kzcrButton button' ).click( function ( e ) {
+	var form = $( '#kzcrChangeRequestForm' ).get( 0 ),
+		$button = $( '#kzcrButton button' );
+
+	$button.on( 'click', function ( e ) {
 		e.preventDefault();
 
 		// Manually invoke the browser's HTML form field validation prior to the reCAPTCHA callout.
@@ -35,13 +38,12 @@ window.grecaptchaOnJs = function () {
 					{ action: 'change_request' }
 				).then( function ( token ) {
 					$( '#recaptchaToken' ).val( token );
-					$( '#kzcrChangeRequestForm' ).submit();
+					$( '#kzcrChangeRequestForm' ).trigger( 'submit' );
 				} );
 				// Disable the submit button meanwhile.
-				var jqButton = $( '#kzcrButton button' );
-				var waitMsg = $( '#kzcrButton button' ).attr( 'data-waitmsg' );
+				var waitMsg = $button.attr( 'data-waitmsg' );
 				if ( waitMsg !== '' ) {
-					jqButton.attr( 'disabled', true ).find( '.oo-ui-labelElement-label' )
+					$button.attr( 'disabled', true ).find( '.oo-ui-labelElement-label' )
 						.text( waitMsg + '...' );
 				}
 			} );
