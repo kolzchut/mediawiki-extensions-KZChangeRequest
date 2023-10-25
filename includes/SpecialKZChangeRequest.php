@@ -178,9 +178,10 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// Post-submission confirmation
 		$this->submissionSuccessful = true;
 		$output = $this->getOutput();
-		$output->addHTML(
-			"<p class='kzcr-confirmation'>" . $this->msg( 'kzchangerequest-confirmation-message' )->escaped() . "</p>"
-		);
+		$output->addHTML( Html::element( 'p',
+			[ 'class' => 'kzcr-confirmation' ],
+			$this->msg( 'kzchangerequest-confirmation-message' )->text()
+		) );
 		return true;
 	}
 
