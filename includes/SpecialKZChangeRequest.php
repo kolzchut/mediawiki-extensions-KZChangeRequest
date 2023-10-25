@@ -38,9 +38,9 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// Load form structure
 		$articleId = $postValues['wpkzcrArticleId'] ?? $request->getText( 'articleId' );
 		$page = $this->getPage( $articleId ?? 0 );
-		$pageTitle = !empty( $page ) ? $page->getTitle()->getText()
+		$pageTitleText = !empty( $page ) ? $page->getTitle()->getText()
 			: $this->msg( 'kzchangerequest-pageunknown' )->text();
-		$form = $this->getFormStructure( $pageTitle );
+		$form = $this->getFormStructure( $pageTitleText );
 		if ( !empty( $articleId ) ) {
 			$form['kzcrArticleId']['default'] = $articleId;
 		}
@@ -136,24 +136,23 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		}
 		// Open Jira Service Desk ticket
 		$language = $this->getLanguage();
-		$languageName = MediaWikiServices::getInstance()->getLanguageNameUtils()
-			->getLanguageName( $language->mCode, 'en' );
 
 		$fields = [
 			'summary' => $pageTitle,
 			'description' => $postData['kzcrRequest'],
 			// "Language"
-			'customfield_10305' => [ 'value' => $languageName ],
+			'customfield_10305' => [ 'value' => self::getContentLanguageName() ],
 			// "Page Title"
 			'customfield_10201' => $pageTitle,
 			// "Contact Name"
 			'customfield_10202' => $postData['kzcrContactName'],
 			// "Contact Email"
 			'customfield_10203' => $email,
-			// "content_area" @TODO: is this deprecated?
-			'customfield_11691' => '',
 			// "wikipage_categories"
 			'customfield_10800' => $pageCategories,
+			// "article_translated_to"
+			'customfield_11711' => $this->getTranslationLanguagesForJira( $page->getId() ),
+
 			// "ReCAPTCHA Score"
 			'customfield_11714' => ( $recaptchaScore === false ) ? -1 : $recaptchaScore,
 		];
@@ -170,7 +169,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		if ( !empty( $linkFormat ) && !empty( $postData['kzcrArticleId'] ) ) {
 			$link = str_replace(
 				[ '$articleId', '$lang' ],
-				[ $postData['kzcrArticleId'], $language->mCode ],
+				[ $postData['kzcrArticleId'], self::getContentLanguageCode() ],
 				$linkFormat
 			);
 			// "Link"
@@ -200,12 +199,73 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 	}
 
 	/**
+	 * @param int $articleId
+	 *
+	 * @return array
+	 */
+	private function getTranslationLanguagesForJira( int $articleId ): array {
+		$langLinks = $this->getPageLankLinks( $articleId );
+		// To update a multi-select field by value and not id, we have to pass an
+		// object with specific 'value' => $value
+		$translations = [];
+		foreach ( $langLinks as $key => $val ) {
+			$translations[] = [ 'value' => $key ];
+		}
+
+		return $translations;
+	}
+
+	/**
+	 * @return string
+	 */
+	private static function getContentLanguageCode(): string {
+		return MediaWikiServices::getInstance()->getContentLanguage()->getCode();
+	}
+
+	/**
+	 * @return string
+	 */
+	private static function getContentLanguageName(): string {
+		$languageNameUtils = MediaWikiServices::getInstance()->getLanguageNameUtils();
+		return $languageNameUtils->getLanguageName( self::getContentLanguageCode(), 'en' );
+	}
+
+	/**
+	 * Get an array of existing interlanguage links, with the language code in the key and the
+	 * title in the value.
+	 *
+	 * Taken from Core's LinksUpdate::getExistingInterlangs() [includes/deferred/LinksUpdate.php]
+	 *
+	 * @param int $articleId
+	 *
+	 * @return array
+	 */
+	private function getPageLankLinks( int $articleId ): array {
+		if ( isset( $this->langLinks ) ) {
+			return $this->langLinks;
+		}
+
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'langlinks', [ 'll_lang', 'll_title' ],
+			[ 'll_from' => $articleId ], __METHOD__
+		);
+		$arr = [];
+		foreach ( $res as $row ) {
+			$arr[$row->ll_lang] = $row->ll_title;
+		}
+
+		$this->langLinks = $arr;
+		return $arr;
+	}
+
+	/**
 	 * Utility method to load page info, with error logging.
 	 * @param string|int $articleId Article ID for the relevant wiki page
 	 * @return WikiPage|false
 	 */
 	private function getPage( $articleId ) {
-		$page = \WikiPage::newFromID( $articleId );
+		$page = WikiPage::newFromID( $articleId );
 		if ( !$page ) {
 			$this->logger->alert(
 				"Failed to find page corresponding to articleId {articleId}",
