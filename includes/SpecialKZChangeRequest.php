@@ -125,8 +125,13 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// We can't create new customers from here - it requires extensive permissions, so we do
 		// that with a Jira automation. However, the automation fails if we pass it the email of an
 		// existing company.
-		// Therefore, we check if the customer already exists and and set the customer ID in the request
-		$customerId = $this->jiraGetCustomer( $postData['kzcrContactEmail'], $jiraConfig );
+		// Therefore, we check if the customer already exists and set the customer ID in the request
+		$email = $postData['kzcrContactEmail'];
+		if ( !empty( $email ) && \Sanitizer::validateEmail( $email ) ) {
+			$customerId = $this->jiraGetCustomer( $postData[ 'kzcrContactEmail' ], $jiraConfig );
+		} else {
+			$email = '';
+		}
 		// Open Jira Service Desk ticket
 		$language = $this->getLanguage();
 		$languageName = MediaWikiServices::getInstance()->getLanguageNameUtils()
@@ -146,7 +151,7 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				// "Contact Name"
 				'customfield_10202' => $postData['kzcrContactName'],
 				// "Contact Email"
-				'customfield_10203' => $postData['kzcrContactEmail'],
+				'customfield_10203' => $email,
 				// "content_area" @TODO: is this deprecated?
 				'customfield_11691' => '',
 				// "wikipage_categories"
