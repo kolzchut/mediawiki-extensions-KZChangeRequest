@@ -12,7 +12,7 @@ class KZChangeRequest {
 		$urlParams = $articleId ? [ 'articleId' => $articleId ] : "";
 		$url = SpecialPage::getTitleFor( 'KZChangeRequest' )->getLocalURL( $urlParams );
 		return Html::element( 'a',
-			[ 'class' => 'btn ranking-btn changerequest', 'href' => $url ],
+			[ 'class' => 'btn ranking-btn changerequest-btn', 'href' => $url ],
 			wfMessage( 'kzchangerequest-button-label' )
 		);
 	}

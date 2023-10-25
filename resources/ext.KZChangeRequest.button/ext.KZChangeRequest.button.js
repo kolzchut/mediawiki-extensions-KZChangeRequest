@@ -1,7 +1,8 @@
 $( function () {
 	mw.loader.using( [ 'mediawiki.api', 'oojs-ui-widgets', 'oojs-ui-windows' ], function () {
 		// When the Change Request button is pressed open the form in a modal dialog.
-		$( '.ranking-btn.changerequest' ).on( 'click', function ( e ) {
+		// eslint-disable-next-line no-jquery/no-global-selector
+		$( '.changerequest-btn' ).on( 'click', function ( e ) {
 			e.preventDefault();
 
 			// Subclass OOUI's ProcessDialog for our modal.
