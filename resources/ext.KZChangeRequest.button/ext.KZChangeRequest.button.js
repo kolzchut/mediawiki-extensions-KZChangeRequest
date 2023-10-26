@@ -17,7 +17,7 @@ $( function () {
 			ModalDialog.static.title = mw.msg( 'kzchangerequest' );
 			ModalDialog.static.actions = [
 				{
-					label: 'Cancel',
+					label: mw.msg( 'kzchangerequest-cancel' ),
 					flags: [ 'safe', 'close' ]
 				}
 			];

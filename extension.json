@@ -62,7 +62,8 @@
 			"scripts": [ "ext.KZChangeRequest.button.js" ],
 			"styles": [ "ext.KZChangeRequest.button.css" ],
 			"messages": [
-				"kzchangerequest"
+				"kzchangerequest",
+				"kzchangerequest-cancel"
 			]
 		},
 		"ext.KZChangeRequest.modal": {
