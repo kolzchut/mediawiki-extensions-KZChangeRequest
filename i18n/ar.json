@@ -1,4 +1,28 @@
 {
-	"kzchangerequest-button-intro": "هل لديكم معلومات أو اقتراحات أخرى لهذه الصفحة",
-	"kzchangerequest-button-label": "أرسلوا اقتراح التغيير "
+	"@metadata": {
+		"authors": []
+	},
+	"kzchangerequest": "اكتب اقتراح تغيير",
+	"kzchangerequest-desc": "استمارة اقتراح تغيير/تعديلات على محتوى الصفحات",
+	"kzchangerequest-intro-1": "وجدتم محتوى غير دقدق؟ هل لديكم معلومات إضافية أو اقتراحات لتعديل هذه الصفحة؟",
+	"kzchangerequest-intro-2": "يسعدنا أن تخبرونا عن التعديلات، وبحسب الحاجة، سوف نقوم بتعديل الموقع",
+	"kzchangerequest-relevantpage": "اسم الصفحة",
+	"kzchangerequest-pageunknown": "صفحة غير معروفة",
+	"kzchangerequest-request": "اقتراحات وملاحظات",
+	"kzchangerequest-mandatory-field": "إلزامي",
+	"kzchangerequest-optional-field": "إختياري",
+	"kzchangerequest-recommended-field": "مستحسن",
+	"kzchangerequest-contact-intro-1": "تريدون أن نخبركم بنتيجة التوجه؟",
+	"kzchangerequest-contact-intro-2": "نرجو منكم إدخال تفاصيلكم",
+	"kzchangerequest-contact-email": "البريد الالكتروني",
+	"kzchangerequest-contact-name": "الإسم",
+	"kzchangerequest-notice": "انتبهوا: موقع \"كل الحق\" يزوّد معلومات عامة فقط. نحن لا نعمل على تقديم ردود لتوجّهات شخصية، تقديم استشارة قانونية، أو محاولة تغيير قوانين وإجراءات. اذا كان توجّهكم حول هذه المواضيع، يوصى بالتوجه مباشرة لمنظمات الدعم والمساعدة التي تظهر في الصفحات",
+	"kzchangerequest-submit": "ارسال اقتراح تغيير",
+	"kzchangerequest-cancel": "إلغاء",
+	"kzchangerequest-waiting": "نرجو الانتظار",
+	"kzchangerequest-finish": "إنهاء وإغلاق النافذة",
+	"kzchangerequest-submission-error": "عفواً، بسبب خطأ داخلي في النظام لم يرسل توجّهك. نرجو إعادة المحاولة في وقت لاحق",
+	"kzchangerequest-confirmation-message": "تم ارسال توجّهك بنجاح. شكراً! نأمل أن نستطيع تطبيق الاقتراح وتطوير الموقع من خلاله",
+	"kzchangerequest-modal-load-error": "عفواًً، بسبب خطأ داخلي في النظام لا يمكن في هذه اللحظة فتح اقتراح تغيير. نرجو إعادة المحاولة في وقت لاحق",
+	"kzchangerequest-button-label": "اقتراح تعديل"
 }

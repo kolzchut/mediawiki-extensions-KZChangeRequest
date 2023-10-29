@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"kzchangerequest": "Предлагаемое изменение в содержании сайта",
+	"kzchangerequest-desc": "Форма для предложения изменений/исправлений содержания страницы",
+	"kzchangerequest-intro-1": "Вы нашли неточности? У вас есть дополнительная информация или предложения по улучшению этой записи?",
+	"kzchangerequest-intro-2": "Мы будем рады, если вы сообщите нам об этом, в случае необходимости мы внесем изменения",
+	"kzchangerequest-relevantpage": "Имя записи",
+	"kzchangerequest-pageunknown": "Страница неизвестна",
+	"kzchangerequest-request": "Предложения и комментарии",
+	"kzchangerequest-mandatory-field": "Обязательно",
+	"kzchangerequest-optional-field": "По желанию",
+	"kzchangerequest-recommended-field": "Рекомендуется",
+	"kzchangerequest-contact-intro-1": "",
+	"kzchangerequest-contact-intro-2": "Пожалуйста, введите свои данные",
+	"kzchangerequest-contact-email": "Электронная почта",
+	"kzchangerequest-contact-name": "Имя",
+	"kzchangerequest-notice": "Обратите внимание: на сайте «Коль Зхут» представлена ​​только общая информация. Мы не предоставляем ответы на частные вопросы и юридические консультации, и у нас нет полномочий изменить законы и инструкции. Если ваше обращение по одной из этих тем, мы рекомендуеем напрямую обратиться в различные организации, указанные на страницах портала",
+	"kzchangerequest-submit": "Отправить вариант исправлений",
+	"kzchangerequest-cancel": "Отмена",
+	"kzchangerequest-waiting": "Пожалуйста, подождите",
+	"kzchangerequest-finish": "Завершить и закрыть окно",
+	"kzchangerequest-submission-error": "Мы сожалеем, но из-за внутренней ошибки в системе ваше обращение не было отправлено. Пожалуйста, повторите попытку позже",
+	"kzchangerequest-confirmation-message": "Ваше обращение успешно отправлено Спасибо! Мы надеемся, что сможем реализовать ваше предложение и тем самым улучшить сайт",
+	"kzchangerequest-modal-load-error": "Мы сожалеем, но из-за внутренней ошибки в системе, в данный момент невозможно предложить исправление. Пожалуйста, повторите попытку позже.",
+	"kzchangerequest-button-label": "Предложить изменение"
+}

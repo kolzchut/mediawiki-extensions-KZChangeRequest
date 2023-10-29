@@ -9,6 +9,9 @@
 	"kzchangerequest-relevantpage": "עמוד התוכן",
 	"kzchangerequest-pageunknown": "דף לא ידוע",
 	"kzchangerequest-request": "הצעות והערות לערך",
+	"kzchangerequest-mandatory-field": "חובה",
+	"kzchangerequest-optional-field": "אופציונלי",
+	"kzchangerequest-recommended-field": "מומלץ",
 	"kzchangerequest-contact-intro-1": "רוצים שנעדכן אתכם לגבי הפניה?",
 	"kzchangerequest-contact-intro-2": "אנא הכניסו את פרטיכם",
 	"kzchangerequest-contact-email": "דוא\"ל",
@@ -21,6 +24,5 @@
 	"kzchangerequest-submission-error": "סליחה, בגלל שגיאה פנימית במערכת בקשתך לא נשלחה. נא לנסות שוב בזמן אחר.",
 	"kzchangerequest-confirmation-message": "תודה רבה. הבקשה שלך נשלחה בהצלחה.",
 	"kzchangerequest-modal-load-error": "סליחה, בגלל שגיאה פנימית במערכת לא ניתן ברגע זה לפתוח הצעת שינוי. נא לנסות שוב בזמן אחר.",
-	"kzchangerequest-button-intro": "יש לכם מידע נוסף או הצעות לעדכון ערך זה?",
-	"kzchangerequest-button-label": "שלחו הצעת שינוי"
+	"kzchangerequest-button-label": "הציעו שינוי"
 }
