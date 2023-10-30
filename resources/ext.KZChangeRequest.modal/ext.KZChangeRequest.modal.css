@@ -3,6 +3,10 @@
 	margin: 1em 0;
 }
 
+#changeRequestModalBody h4 {
+	color: #2D5B85;
+}
+
 /* link */
 .kzcr-cancel a {
 	text-decoration: none;
