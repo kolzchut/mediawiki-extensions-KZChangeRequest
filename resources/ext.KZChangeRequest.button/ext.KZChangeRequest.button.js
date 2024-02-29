@@ -1,9 +1,10 @@
 $( function () {
-	mw.loader.using( [ 'mediawiki.api', 'oojs-ui-widgets', 'oojs-ui-windows', 'mediawiki.jqueryMsg' ], function () {
-		// When the Change Request button is pressed open the form in a modal dialog.
-		// eslint-disable-next-line no-jquery/no-global-selector
-		$( '.changerequest-btn' ).on( 'click', function ( e ) {
-			e.preventDefault();
+	// When the Change Request button is pressed open the form in a modal dialog.
+	// eslint-disable-next-line no-jquery/no-global-selector
+	$( '.changerequest-btn' ).on( 'click', function ( e ) {
+		e.preventDefault();
+
+		mw.loader.using( [ 'mediawiki.api', 'oojs-ui-widgets', 'oojs-ui-windows', 'mediawiki.jqueryMsg' ], function () {
 
 			// Subclass OOUI's ProcessDialog for our modal.
 			function ModalDialog( config ) {
