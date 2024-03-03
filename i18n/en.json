@@ -22,6 +22,7 @@
 	"kzchangerequest-waiting": "Please wait",
 	"kzchangerequest-finish": "Finish and close window",
 	"kzchangerequest-submission-error": "Sorry, due to an internal system error your request could not be submitted. Please try again later.",
+	"kzchangerequest-captcha-fail": "It seems you haven't solved the CAPTCHA.",
 	"kzchangerequest-confirmation-message": "Thank you! Your request has been submitted.",
 	"kzchangerequest-modal-load-error": "Sorry, due to an internal system error a change request cannot be opened at this time. Please try again later.",
 	"kzchangerequest-button-label": "Propose a change"

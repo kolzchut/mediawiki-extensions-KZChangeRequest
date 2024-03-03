@@ -48,29 +48,27 @@
 			"i18n"
 		]
 	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "KZChangeRequest/resources"
+	},
 	"ResourceModules": {
 		"ext.KZChangeRequest.form": {
-			"localBasePath": "resources/ext.KZChangeRequest.form",
-			"remoteExtPath": "KZChangeRequest",
-			"scripts": [ "ext.KZChangeRequest.form.js" ],
-			"styles": [ "ext.KZChangeRequest.form.css" ],
-			"messages": [ "kzchangerequest-waiting" ]
+			"scripts": [ "ext.KZChangeRequest.form/ext.KZChangeRequest.form.js" ],
+			"styles": [ "ext.KZChangeRequest.form/ext.KZChangeRequest.form.css" ],
+			"messages": [ "kzchangerequest-waiting", "kzchangerequest-captcha-fail" ]
 		},
 		"ext.KZChangeRequest.button": {
-			"localBasePath": "resources/ext.KZChangeRequest.button",
-			"remoteExtPath": "KZChangeRequest",
-			"scripts": [ "ext.KZChangeRequest.button.js" ],
-			"styles": [ "ext.KZChangeRequest.button.css" ],
+			"scripts": [ "ext.KZChangeRequest.button/ext.KZChangeRequest.button.js" ],
+			"styles": [ "ext.KZChangeRequest.button/ext.KZChangeRequest.button.css" ],
 			"messages": [
 				"kzchangerequest",
 				"kzchangerequest-cancel"
 			]
 		},
 		"ext.KZChangeRequest.modal": {
-			"localBasePath": "resources/ext.KZChangeRequest.modal",
-			"remoteExtPath": "KZChangeRequest",
-			"scripts": [ "ext.KZChangeRequest.modal.js" ],
-			"styles": [ "ext.KZChangeRequest.modal.css" ]
+			"scripts": [ "ext.KZChangeRequest.modal/ext.KZChangeRequest.modal.js" ],
+			"styles": [ "ext.KZChangeRequest.modal/ext.KZChangeRequest.modal.css" ]
 		}
 	},
 	"manifest_version": 1

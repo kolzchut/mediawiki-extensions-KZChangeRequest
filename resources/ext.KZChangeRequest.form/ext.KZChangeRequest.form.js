@@ -37,6 +37,9 @@ window.grecaptchaOnJs = function () {
 					mw.config.get( 'KZChangeRequestReCaptchaV3SiteKey' ),
 					{ action: 'change_request' }
 				).then( function ( token ) {
+					if ( !token ) {
+						form.prepend( mw.msg( 'kzchangerequest-captcha-fail' ) );
+					}
 					$( '#recaptchaToken' ).val( token );
 					$( '#kzcrChangeRequestForm' ).trigger( 'submit' );
 				} );

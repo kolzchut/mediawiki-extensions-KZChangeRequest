@@ -22,6 +22,7 @@
 	"kzchangerequest-waiting": "نرجو الانتظار",
 	"kzchangerequest-finish": "إنهاء وإغلاق النافذة",
 	"kzchangerequest-submission-error": "عفواً، بسبب خطأ داخلي في النظام لم يرسل توجّهك. نرجو إعادة المحاولة في وقت لاحق",
+	"kzchangerequest-captcha-fail": "يبدو أنك لم تحل اختبار كابتشا.",
 	"kzchangerequest-confirmation-message": "تم ارسال توجّهك بنجاح. شكراً! نأمل أن نستطيع تطبيق الاقتراح وتطوير الموقع من خلاله",
 	"kzchangerequest-modal-load-error": "عفواًً، بسبب خطأ داخلي في النظام لا يمكن في هذه اللحظة فتح اقتراح تغيير. نرجو إعادة المحاولة في وقت لاحق",
 	"kzchangerequest-button-label": "اقتراح تعديل"

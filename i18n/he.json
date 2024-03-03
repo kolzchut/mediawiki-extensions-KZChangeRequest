@@ -22,6 +22,7 @@
 	"kzchangerequest-waiting": "נא להמתין",
 	"kzchangerequest-finish": "סיים וסגור חלון",
 	"kzchangerequest-submission-error": "סליחה, בגלל שגיאה פנימית במערכת בקשתך לא נשלחה. נא לנסות שוב בזמן אחר.",
+	"kzchangerequest-captcha-fail": "נראה שלא פתרתם את ה־CAPTCHA.",
 	"kzchangerequest-confirmation-message": "תודה רבה. הבקשה שלך נשלחה בהצלחה.",
 	"kzchangerequest-modal-load-error": "סליחה, בגלל שגיאה פנימית במערכת לא ניתן ברגע זה לפתוח הצעת שינוי. נא לנסות שוב בזמן אחר.",
 	"kzchangerequest-button-label": "הציעו שינוי"

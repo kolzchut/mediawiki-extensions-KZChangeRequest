@@ -99,8 +99,8 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 		// Get reCAPTCHA v3 score
 		$recaptchaScore = $this->validateRecaptcha();
 		if ( $recaptchaScore === false ) {
-			// Fail silently if something's wrong with reCAPTCHA
 			$recaptchaScore = -1;
+			return $this->msg( 'kzchangerequest-captcha-fail' )->text();
 		}
 
 		// Find or create Jira Service Desk "customer" for the current user
