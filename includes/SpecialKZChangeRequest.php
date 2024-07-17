@@ -282,6 +282,13 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 	 * @return array
 	 */
 	private function getFormStructure( $pageTitle = '' ): array {
+
+		$user = $this->getUser();
+		if ( $user->isRegistered() ) {
+			$userName = $user->getRealName() ?? $user->getName();
+			$userEmail = $userName ? $user->getEmail() : null;
+		}
+
 		return [
 			'kzcrIntro' => [
 				'type' => 'info',
@@ -319,11 +326,13 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 				'type' => 'text',
 				'cssclass' => 'kzcr-name',
 				'label-message' => 'kzchangerequest-contact-name',
+				'default' => $userName ?? '',
 			],
 			'kzcrContactEmail' => [
 				'type' => 'email',
 				'label-message' => 'kzchangerequest-contact-email',
 				'cssclass' => 'kzcr-email',
+				'default' => $userEmail ?? '',
 				'required' => false,
 			],
 			'kzcrNotice' => [
