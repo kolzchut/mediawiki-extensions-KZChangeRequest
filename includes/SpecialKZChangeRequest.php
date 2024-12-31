@@ -282,10 +282,9 @@ class SpecialKZChangeRequest extends \UnlistedSpecialPage {
 	 * @return array
 	 */
 	private function getFormStructure( $pageTitle = '' ): array {
-
 		$user = $this->getUser();
 		if ( $user->isRegistered() ) {
-			$userName = $user->getRealName() ?? $user->getName();
+			$userName = !empty( $user->getRealName() ) ? $user->getRealName() : $user->getName();
 			$userEmail = $userName ? $user->getEmail() : null;
 		}
 
