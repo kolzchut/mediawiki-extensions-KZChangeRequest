@@ -9,9 +9,6 @@
 	"kzchangerequest-relevantpage": "עמוד התוכן",
 	"kzchangerequest-pageunknown": "דף לא ידוע",
 	"kzchangerequest-request": "הצעות והערות לערך",
-	"kzchangerequest-mandatory-field": "חובה",
-	"kzchangerequest-optional-field": "אופציונלי",
-	"kzchangerequest-recommended-field": "מומלץ",
 	"kzchangerequest-contact-intro-1": "רוצים שנעדכן אתכם לגבי הפניה?",
 	"kzchangerequest-contact-intro-2": "אנא הכניסו את פרטיכם",
 	"kzchangerequest-contact-email": "דוא\"ל",
@@ -22,8 +19,13 @@
 	"kzchangerequest-waiting": "נא להמתין",
 	"kzchangerequest-finish": "סיים וסגור חלון",
 	"kzchangerequest-submission-error": "סליחה, בגלל שגיאה פנימית במערכת בקשתך לא נשלחה. נא לנסות שוב בזמן אחר.",
-	"kzchangerequest-captcha-fail": "נראה שלא פתרתם את ה־CAPTCHA.",
+	"kzchangerequest-captcha-fail": "נראה שאמצעי אבטחה של הטופס אינו זמין. אנא נסו שנית מאוחר יותר.",
 	"kzchangerequest-confirmation-message": "תודה רבה. הבקשה שלך נשלחה בהצלחה.",
-	"kzchangerequest-modal-load-error": "סליחה, בגלל שגיאה פנימית במערכת לא ניתן ברגע זה לפתוח הצעת שינוי. נא לנסות שוב בזמן אחר.",
-	"kzchangerequest-button-label": "הציעו שינוי"
+	"kzchangerequest-modal-load-error": "סליחה, בגלל שגיאה פנימית במערכת לא ניתן ברגע זה לפתוח הצעת שינוי. אנא נסו שנית מאוחר יותר.",
+	"kzchangerequest-button-label": "הציעו שינוי",
+	"kzchangerequest-recaptcha-load-error": "לא הצלחנו לטעון רכיב הגנה מפני ספאם. נא לנסות לרענן את הדף.",
+	"kzchangerequest-fallback-message": "אם הבעיה נמשכת, נא ליצור קשר איתנו בכתובת",
+	"kzchangerequest-fallback-email-title": "הצעת שינוי עבור $1",
+	"kzchangerequest-fallback-email-body": "הודעה זו נשלחה מכיוון שטופס ההצעה לשינוי נתקל בבעיה טכנית."
+
 }

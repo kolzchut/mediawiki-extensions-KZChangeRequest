@@ -9,9 +9,6 @@
 	"kzchangerequest-relevantpage": "Relevant page",
 	"kzchangerequest-pageunknown": "Unknown page",
 	"kzchangerequest-request": "Requested changes/feedback",
-	"kzchangerequest-mandatory-field": "Mandatory",
-	"kzchangerequest-optional-field": "Optional",
-	"kzchangerequest-recommended-field": "Recommended",
 	"kzchangerequest-contact-intro-1": "Would you like to be updated about this request?",
 	"kzchangerequest-contact-intro-2": "Please enter your contact information.",
 	"kzchangerequest-contact-email": "Email",
@@ -25,5 +22,9 @@
 	"kzchangerequest-captcha-fail": "It seems you haven't solved the CAPTCHA.",
 	"kzchangerequest-confirmation-message": "Thank you! Your request has been submitted.",
 	"kzchangerequest-modal-load-error": "Sorry, due to an internal system error a change request cannot be opened at this time. Please try again later.",
-	"kzchangerequest-button-label": "Propose a change"
+	"kzchangerequest-button-label": "Propose a change",
+	"kzchangerequest-recaptcha-load-error": "Failed to load security verification. Please try refreshing the page.",
+	"kzchangerequest-fallback-message": "If the problem persists, please contact us at",
+	"kzchangerequest-fallback-email-title": "Change Request for $1",
+	"kzchangerequest-fallback-email-body": "This email was sent because the change request form encountered a technical problem loading the security verification (reCAPTCHA)."
 }

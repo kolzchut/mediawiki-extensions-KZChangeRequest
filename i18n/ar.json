@@ -9,9 +9,6 @@
 	"kzchangerequest-relevantpage": "اسم الصفحة",
 	"kzchangerequest-pageunknown": "صفحة غير معروفة",
 	"kzchangerequest-request": "اقتراحات وملاحظات",
-	"kzchangerequest-mandatory-field": "إلزامي",
-	"kzchangerequest-optional-field": "إختياري",
-	"kzchangerequest-recommended-field": "مستحسن",
 	"kzchangerequest-contact-intro-1": "تريدون أن نخبركم بنتيجة التوجه؟",
 	"kzchangerequest-contact-intro-2": "نرجو منكم إدخال تفاصيلكم",
 	"kzchangerequest-contact-email": "البريد الالكتروني",
@@ -25,5 +22,9 @@
 	"kzchangerequest-captcha-fail": "يبدو أنك لم تحل اختبار كابتشا.",
 	"kzchangerequest-confirmation-message": "تم ارسال توجّهك بنجاح. شكراً! نأمل أن نستطيع تطبيق الاقتراح وتطوير الموقع من خلاله",
 	"kzchangerequest-modal-load-error": "عفواًً، بسبب خطأ داخلي في النظام لا يمكن في هذه اللحظة فتح اقتراح تغيير. نرجو إعادة المحاولة في وقت لاحق",
-	"kzchangerequest-button-label": "اقتراح تعديل"
+	"kzchangerequest-button-label": "اقتراح تعديل",
+	"kzchangerequest-recaptcha-load-error": "فشل في تحميل التحقق الأمني. نرجو تحديث الصفحة",
+	"kzchangerequest-fallback-message": "إذا استمرت المشكلة، نرجو التواصل معنا على",
+	"kzchangerequest-fallback-email-title": "اقتراح تغيير لـ $1",
+	"kzchangerequest-fallback-email-body": "تم إرسال هذا البريد الإلكتروني لأن نموذج اقتراح التغيير واجه مشكلة تقنية في تحميل التحقق الأمني (كابتشا)."
 }

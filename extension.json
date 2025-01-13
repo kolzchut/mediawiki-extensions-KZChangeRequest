@@ -1,6 +1,6 @@
 {
 	"name": "KZChangeRequest",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": [
 		"Joel R. ([https://www.kolzchut.org.il Kol-Zchut])"
 	],
@@ -14,34 +14,10 @@
 	"AutoloadClasses": {
 		"KZChangeRequest": "KZChangeRequest.php",
 		"KZChangeRequestHooks": "KZChangeRequestHooks.php",
-		"SpecialKZChangeRequest": "includes/SpecialKZChangeRequest.php",
-		"ApiKZChangeRequestModal": "includes/ApiKZChangeRequestModal.php"
-	},
-	"SpecialPages": {
-		"KZChangeRequest": "SpecialKZChangeRequest"
+		"ApiKZChangeRequest": "includes/ApiKZChangeRequest.php"
 	},
 	"APIModules": {
-		"kzcrModal": "ApiKZChangeRequestModal"
-	},
-	"config": {
-		"KZChangeRequestReCaptchaV3SiteKey": "",
-		"KZChangeRequestRecaptchaV3Secret": "",
-		"KZChangeRequestJiraServiceDeskApi": {
-			"user": "",
-			"password": "",
-			"project": "",
-			"server": "",
-			"serviceDeskId": "",
-			"requestTypeId": "",
-			"shortLinkFormat": ""
-		}
-	},
-	"HookHandlers": {},
-	"Hooks": {
-		"BeforePageDisplay": "KZChangeRequestHooks::onBeforePageDisplay"
-	},
-	"ExtensionMessagesFiles": {
-		"KZChangeRequestAliases": "KZChangeRequest.i18n.alias.php"
+		"kzchangerequest": "ApiKZChangeRequest"
 	},
 	"MessagesDirs": {
 		"KZChangeRequest": [
@@ -53,23 +29,79 @@
 		"remoteExtPath": "KZChangeRequest/resources"
 	},
 	"ResourceModules": {
-		"ext.KZChangeRequest.form": {
-			"scripts": [ "ext.KZChangeRequest.form/ext.KZChangeRequest.form.js" ],
-			"styles": [ "ext.KZChangeRequest.form/ext.KZChangeRequest.form.css" ],
-			"messages": [ "kzchangerequest-waiting", "kzchangerequest-captcha-fail" ]
-		},
 		"ext.KZChangeRequest.button": {
-			"scripts": [ "ext.KZChangeRequest.button/ext.KZChangeRequest.button.js" ],
-			"styles": [ "ext.KZChangeRequest.button/ext.KZChangeRequest.button.css" ],
+			"scripts": [ "ext.KZChangeRequest.button/ext.KZChangeRequest.button.js" ]
+		},
+		"ext.KZChangeRequest.form": {
+			"packageFiles": [
+				"ext.KZChangeRequest.form/ext.KZChangeRequest.form.js",
+				{
+					"name": "ext.KZChangeRequest.form/config.json",
+					"config": [ "KZChangeRequestReCaptchaV3SiteKey", "KZChangeRequestFallbackEmail"]
+				}
+			],
+			"styles": [ "ext.KZChangeRequest.form/ext.KZChangeRequest.form.less" ],
+			"dependencies": [
+				"oojs-ui-core",
+				"oojs-ui-windows",
+				"oojs-ui-widgets",
+				"mediawiki.api"
+			],
 			"messages": [
 				"kzchangerequest",
-				"kzchangerequest-cancel"
+				"kzchangerequest-intro-1",
+				"kzchangerequest-intro-2",
+				"kzchangerequest-relevantpage",
+				"kzchangerequest-request",
+				"kzchangerequest-contact-intro-1",
+				"kzchangerequest-contact-intro-2",
+				"kzchangerequest-contact-name",
+				"kzchangerequest-contact-email",
+				"kzchangerequest-notice",
+				"kzchangerequest-submit",
+				"kzchangerequest-cancel",
+				"kzchangerequest-submission-error",
+				"kzchangerequest-confirmation-message",
+				"kzchangerequest-captcha-fail",
+				"kzchangerequest-recaptcha-load-error",
+				"kzchangerequest-fallback-message",
+				"kzchangerequest-fallback-email-title",
+				"kzchangerequest-fallback-email-body"
 			]
-		},
-		"ext.KZChangeRequest.modal": {
-			"scripts": [ "ext.KZChangeRequest.modal/ext.KZChangeRequest.modal.js" ],
-			"styles": [ "ext.KZChangeRequest.modal/ext.KZChangeRequest.modal.css" ]
 		}
 	},
-	"manifest_version": 1
+	"HookHandlers": {
+		"main": {
+			"class": "KZChangeRequestHooks"
+		}
+	},
+	"Hooks": {
+		"BeforePageDisplay": {
+			"handler": "main"
+		}
+	},
+	"config": {
+		"KZChangeRequestReCaptchaV3SiteKey": {
+			"value": ""
+		},
+		"KZChangeRequestRecaptchaV3Secret": {
+			"value": ""
+		},
+		"KZChangeRequestJiraServiceDeskApi": {
+			"value": {
+				"user": "",
+				"password": "",
+				"project": "",
+				"server": "",
+				"serviceDeskId": "",
+				"requestTypeId": "",
+				"shortLinkFormat": ""
+			}
+		},
+		"KZChangeRequestFallbackEmail": {
+			"value": "",
+			"description": "Email address to show when reCAPTCHA fails to load. If empty, no fallback will be shown."
+		}
+	},
+	"manifest_version": 2
 }

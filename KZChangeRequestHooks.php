@@ -1,18 +1,23 @@
 <?php
 
-class KZChangeRequestHooks {
+use MediaWiki\Hook\BeforePageDisplayHook;
 
+class KZChangeRequestHooks implements BeforePageDisplayHook {
 	/**
-	 * If change request button will be made available on the page,
+	 * Add the resource loader module for the Change Request button
+	 * Pass the user email to the client side
 	 * add the resource module.
-	 *
-	 * @param OutputPage &$out The OutputPage object
-	 * @param Skin &$skin Skin object that will be used to generate the page
-	 * @return bool true
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/BeforePageDisplay
+	 * @param OutputPage $out
+	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
+	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( [ 'ext.KZChangeRequest.button' ] );
-		return true;
+		$email = $out->getUser()->getEmail();
+		if ( $email ) {
+			$out->addJsConfigVars( [
+				'wgUserEmail' => $email
+			] );
+		}
 	}
-
 }

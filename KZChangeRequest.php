@@ -10,9 +10,8 @@ class KZChangeRequest {
 	 */
 	public static function createChangeRequestButton( ?int $articleId = null ): string {
 		$urlParams = $articleId ? [ 'articleId' => $articleId ] : "";
-		$url = SpecialPage::getTitleFor( 'KZChangeRequest' )->getLocalURL( $urlParams );
 		return Html::element( 'a',
-			[ 'class' => 'btn btn-secondary ranking-btn changerequest-btn', 'href' => $url ],
+			[ 'class' => 'btn btn-secondary ranking-btn changerequest-btn', 'href' => '#' ],
 			wfMessage( 'kzchangerequest-button-label' )->text()
 		);
 	}

@@ -1,0 +1,95 @@
+// form.less
+
+// Main dialog namespace
+.kzchangerequest-dialog {
+	h4 {
+		color: #2D5B85;
+	}
+
+	.kzcr-contact-intro {
+		margin-top: 16px;
+	}
+
+	.kzcr-notice {
+		margin: 1em 0;
+	}
+
+	// Form layout and content
+	&.oo-ui-dialog.oo-ui-processDialog {
+		.kzcr-form.oo-ui-fieldsetLayout {
+			// Contact fields section
+			.kzcr-contact-fields {
+				display: flex;
+				gap: 1em;
+				margin: 1em 0;
+
+				.oo-ui-fieldLayout {
+					flex: 1;
+
+					.oo-ui-textInputWidget {
+						max-width: none;
+						width: 100%;
+					}
+				}
+			}
+
+		}
+
+
+		// Single button should take 100% width
+		.oo-ui-buttonWidget:only-child {
+			width: 100%;
+
+			.oo-ui-buttonElement-button {
+				width: 100%;
+			}
+		}
+
+		.kzchangerequest-submit.oo-ui-buttonElement {
+			.oo-ui-buttonElement-button {
+				background-color: #3366cc;
+				border-color: #3366cc;
+				color: white;
+
+				&:hover:not(:disabled) {
+					background-color: #447ff5;
+					border-color: #447ff5;
+				}
+			}
+
+			&.oo-ui-widget-disabled .oo-ui-buttonElement-button {
+				opacity: 0.5;
+				cursor: default;
+			}
+		}
+
+		.kzchangerequest-cancel-footer {
+			float: right;
+		}
+
+		// Cancel button
+		/*
+		.oo-ui-processDialog-actions-safe {
+			.kzchangerequest-cancel.oo-ui-buttonElement {
+				.oo-ui-buttonElement-button {
+					color: #666;
+
+					&:hover:not(:disabled) {
+						color: #447ff5;
+					}
+				}
+			}
+		}
+		 */
+	}
+
+	// Error messages - need full path from dialog root
+	&.oo-ui-dialog .kzchangerequest-error.oo-ui-messageWidget {
+		margin: 1em 0;
+
+		&.oo-ui-flaggedElement-error {
+			background-color: #fee7e6;
+			border-color: #db4437;
+		}
+	}
+}
