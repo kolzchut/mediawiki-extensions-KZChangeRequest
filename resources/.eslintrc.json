@@ -1,0 +1,14 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/client",
+		"wikimedia/mediawiki",
+		"wikimedia/jquery"
+	],
+	"globals": {
+		"grecaptcha": "readonly"
+	},
+	"rules": {
+		"no-implicit-globals": "off"
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"@metadata": {
+		"authors": []
+	},
+	"kzchangerequest": "Dialog title for the change request form.",
+	"kzchangerequest-desc": "Extension description shown on Special:Version.",
+	"kzchangerequest-intro-1": "Heading shown at the top of the change request form.",
+	"kzchangerequest-intro-2": "Introductory text shown below the main form heading.",
+	"kzchangerequest-relevantpage": "Label for the page the request refers to.",
+	"kzchangerequest-pageunknown": "Fallback page title when the relevant page is unknown.",
+	"kzchangerequest-request": "Label and placeholder for the request details field.",
+	"kzchangerequest-contact-intro-1": "Heading for the optional contact details section.",
+	"kzchangerequest-contact-intro-2": "Helper text shown below the contact details heading.",
+	"kzchangerequest-contact-email": "Label for the contact email field.",
+	"kzchangerequest-contact-name": "Label for the contact name field.",
+	"kzchangerequest-notice": "Notice shown below the form fields explaining the scope of support.",
+	"kzchangerequest-submit": "Label for the form submission button.",
+	"kzchangerequest-cancel": "Label for cancel and close buttons in the dialog.",
+	"kzchangerequest-waiting": "Progress message shown while a request is being processed.",
+	"kzchangerequest-finish": "Label for the final action after a successful submission.",
+	"kzchangerequest-submission-error": "Error shown when the request cannot be submitted because of an internal problem.",
+	"kzchangerequest-captcha-fail": "Error shown when CAPTCHA verification fails.",
+	"kzchangerequest-confirmation-message": "Success message shown after a request is submitted.",
+	"kzchangerequest-modal-load-error": "Error shown when the change request dialog cannot be opened.",
+	"kzchangerequest-button-label": "Label for buttons or links that open the change request dialog.",
+	"kzchangerequest-recaptcha-load-error": "Error shown when the reCAPTCHA client cannot be loaded.",
+	"kzchangerequest-fallback-message": "Lead-in text before the fallback contact email link.",
+	"kzchangerequest-fallback-email-title": "Email subject used for the fallback mailto link. Parameters: $1 - page title.",
+	"kzchangerequest-fallback-email-body": "Default body text used in the fallback mailto link."
+}

@@ -2,6 +2,14 @@
 
 The `KZChangeRequest` extension for MediaWiki allows users to submit change requests for articles. It integrates with reCAPTCHA v3 to prevent spam and provides a fallback email option if reCAPTCHA fails to load.
 
+## Changelog
+
+### 0.0.3
+
+- Modernized PHP autoloading to use the extension namespace for hook and API classes.
+- Moved the hook handler to `includes/Hooks.php` and kept the public helper available through a legacy compatibility alias.
+- Updated the development toolchain configuration to current MediaWiki extension defaults.
+
 ## Installation
 
 1. Download and place the `KZChangeRequest` directory in your `extensions/` folder.

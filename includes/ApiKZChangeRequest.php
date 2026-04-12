@@ -1,8 +1,17 @@
 <?php
 
+namespace MediaWiki\Extension\KZChangeRequest;
+
+use ApiBase;
+use Exception;
+use MediaWiki\Json\FormatJson;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Page\WikiPage;
+use MediaWiki\Registration\ExtensionRegistry;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
+use Sanitizer;
 use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiKZChangeRequest extends ApiBase {
@@ -16,7 +25,7 @@ class ApiKZChangeRequest extends ApiBase {
 	}
 
 	/** @inheritDoc */
-	public function execute() {
+	public function execute(): void {
 		// $this->dieWithError( 'just because');
 		// Validate request
 		$params = $this->extractRequestParams();
@@ -36,7 +45,7 @@ class ApiKZChangeRequest extends ApiBase {
 
 		try {
 			// Create Jira ticket
-			$this->createJiraTicket( $params, $page, $recaptchaScore );
+			$this->createJiraTicket( $params, $page );
 
 			$this->getResult()->addValue( null, 'success', 1 );
 		} catch ( Exception $e ) {
@@ -49,7 +58,7 @@ class ApiKZChangeRequest extends ApiBase {
 	}
 
 	/** @inheritDoc */
-	protected function getAllowedParams() {
+	protected function getAllowedParams(): array {
 		return [
 			'articleId' => [
 				ParamValidator::PARAM_TYPE => 'integer',
@@ -78,7 +87,7 @@ class ApiKZChangeRequest extends ApiBase {
 	 * @param WikiPage $page
 	 * @return bool
 	 */
-	private function createJiraTicket( array $params, WikiPage $page ) {
+	private function createJiraTicket( array $params, WikiPage $page ): bool {
 		$config = $this->getConfig()->get( 'KZChangeRequestJiraServiceDeskApi' );
 
 		// Validate Jira config
@@ -101,7 +110,7 @@ class ApiKZChangeRequest extends ApiBase {
 		// Check for existing customer if email provided
 		$customerId = null;
 		$email = $params['contactEmail'] ?? '';
-		if ( !empty( $email ) && \Sanitizer::validateEmail( $email ) ) {
+		if ( !empty( $email ) && Sanitizer::validateEmail( $email ) ) {
 			$customerId = $this->jiraGetCustomer( $email, $config );
 		}
 
@@ -178,7 +187,7 @@ class ApiKZChangeRequest extends ApiBase {
 	 * @param array $jiraConfig
 	 * @return string|null Customer ID if found
 	 */
-	private function jiraGetCustomer( string $email, array $jiraConfig ) {
+	private function jiraGetCustomer( string $email, array $jiraConfig ): ?string {
 		$calloutUrl = $jiraConfig['server']
 			. "/rest/servicedeskapi/servicedesk/projectKey:{$jiraConfig['project']}/customer";
 		$queryData = [
@@ -277,7 +286,7 @@ class ApiKZChangeRequest extends ApiBase {
 	 * @param string $response reCAPTCHA response token
 	 * @return float|bool Score on success, false on failure
 	 */
-	private function validateRecaptcha( $response ) {
+	private function validateRecaptcha( string $response ) {
 		// Get configuration
 		$config = $this->getConfig();
 		$secret = $config->get( 'KZChangeRequestRecaptchaV3Secret' );
@@ -340,59 +349,59 @@ class ApiKZChangeRequest extends ApiBase {
 		 * @param int $articleId
 		 * @return array
 		 */
-		private function getTranslationLanguages( int $articleId ): array {
-			$langLinks = $this->getPageLanguageLinks( $articleId );
+	private function getTranslationLanguages( int $articleId ): array {
+		$langLinks = $this->getPageLanguageLinks( $articleId );
 
-			// To update a multi-select field by value and not id, we have to pass an
-			// object with specific 'value' => $value
-			$translations = [];
-			foreach ( $langLinks as $key => $val ) {
-				$translations[] = [ 'value' => $key ];
-			}
-
-			return $translations;
+		// To update a multi-select field by value and not id, we have to pass an
+		// object with specific 'value' => $value
+		$translations = [];
+		foreach ( $langLinks as $key => $val ) {
+			$translations[] = [ 'value' => $key ];
 		}
+
+		return $translations;
+	}
 
 		/**
 		 * Get existing interlanguage links
 		 * @param int $articleId
 		 * @return array
 		 */
-		private function getPageLanguageLinks( int $articleId ): array {
-			$dbr = wfGetDB( DB_REPLICA );
-			$res = $dbr->select(
-				'langlinks',
-				[ 'll_lang', 'll_title' ],
-				[ 'll_from' => $articleId ],
-				__METHOD__
-			);
+	private function getPageLanguageLinks( int $articleId ): array {
+		$dbr = wfGetDB( DB_REPLICA );
+		$res = $dbr->select(
+			'langlinks',
+			[ 'll_lang', 'll_title' ],
+			[ 'll_from' => $articleId ],
+			__METHOD__
+		);
 
-			$links = [];
-			foreach ( $res as $row ) {
-				$links[$row->ll_lang] = $row->ll_title;
-			}
-
-			return $links;
+		$links = [];
+		foreach ( $res as $row ) {
+			$links[$row->ll_lang] = $row->ll_title;
 		}
+
+		return $links;
+	}
 
 		/**
 		 * Get content language code
 		 * @return string
 		 */
-		private function getContentLanguageCode(): string {
-			return MediaWikiServices::getInstance()->getContentLanguage()->getCode();
-		}
+	private function getContentLanguageCode(): string {
+		return MediaWikiServices::getInstance()->getContentLanguage()->getCode();
+	}
 
 		/**
 		 * Get content language name in English
 		 * @return string
 		 */
-		private function getContentLanguageName(): string {
-			$languageNameUtils = MediaWikiServices::getInstance()->getLanguageNameUtils();
-			return $languageNameUtils->getLanguageName( $this->getContentLanguageCode(), 'en' );
-		}
+	private function getContentLanguageName(): string {
+		$languageNameUtils = MediaWikiServices::getInstance()->getLanguageNameUtils();
+		return $languageNameUtils->getLanguageName( $this->getContentLanguageCode(), 'en' );
+	}
 
-		public function needsToken() {
-			return 'csrf';
-		}
+	public function needsToken(): string {
+		return 'csrf';
+	}
 }

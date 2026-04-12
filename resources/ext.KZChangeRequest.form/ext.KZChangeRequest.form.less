@@ -3,7 +3,7 @@
 // Main dialog namespace
 .kzchangerequest-dialog {
 	h4 {
-		color: #2D5B85;
+		color: #2d5b85;
 	}
 
 	.kzcr-contact-intro {
@@ -32,9 +32,7 @@
 					}
 				}
 			}
-
 		}
-
 
 		// Single button should take 100% width
 		.oo-ui-buttonWidget:only-child {
@@ -47,19 +45,19 @@
 
 		.kzchangerequest-submit.oo-ui-buttonElement {
 			.oo-ui-buttonElement-button {
-				background-color: #3366cc;
-				border-color: #3366cc;
-				color: white;
-
-				&:hover:not(:disabled) {
-					background-color: #447ff5;
-					border-color: #447ff5;
-				}
+				background-color: #36c;
+				border-color: #36c;
+				color: #fff;
 			}
 
 			&.oo-ui-widget-disabled .oo-ui-buttonElement-button {
-				opacity: 0.5;
 				cursor: default;
+				opacity: 0.5;
+			}
+
+			&:not( .oo-ui-widget-disabled ) .oo-ui-buttonElement-button:hover {
+				background-color: #447ff5;
+				border-color: #447ff5;
 			}
 		}
 
