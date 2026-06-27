@@ -2,16 +2,16 @@
 
 namespace MediaWiki\Extension\KZChangeRequest;
 
-use ApiBase;
+use MediaWiki\Api\ApiBase;
 use Exception;
 use MediaWiki\Json\FormatJson;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Page\WikiPage;
+use WikiPage;
 use MediaWiki\Registration\ExtensionRegistry;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Sanitizer;
+use MediaWiki\Parser\Sanitizer;
 use Wikimedia\ParamValidator\ParamValidator;
 
 class ApiKZChangeRequest extends ApiBase {
@@ -37,8 +37,10 @@ class ApiKZChangeRequest extends ApiBase {
 			$this->dieWithError( 'kzchangerequest-captcha-fail' );
 		}
 
-		// Get page info
-		$page = WikiPage::newFromID( $params['articleId'] );
+		// Get page info. WikiPage::newFromID() was removed in MediaWiki 1.43;
+		// use the WikiPageFactory service instead.
+		$page = MediaWikiServices::getInstance()->getWikiPageFactory()
+			->newFromID( $params['articleId'] );
 		if ( !$page ) {
 			$this->dieWithError( 'kzchangerequest-invalid-page' );
 		}
@@ -208,7 +210,7 @@ class ApiKZChangeRequest extends ApiBase {
 			if ( !$status->isOK() ) {
 				$this->logger->error(
 					"Jira customer query callout failed with message: {errorMsg}, email={email}",
-					[ 'errorMsg' => $status->getMessage()->toString(), 'email' => $email ]
+					[ 'errorMsg' => $this->formatStatus( $status ), 'email' => $email ]
 				);
 				return null;
 			}
@@ -228,6 +230,22 @@ class ApiKZChangeRequest extends ApiBase {
 			);
 			return null;
 		}
+	}
+
+	/**
+	 * Format an HTTP-request Status into plain text for logging.
+	 *
+	 * MWHttpRequest::execute() returns a Status; reading it via the deprecated
+	 * Status::getMessage()->toString() breaks under MediaWiki 1.42+ (getMessage
+	 * is deprecated in favour of StatusFormatter, and Message::toString() now
+	 * requires a format argument). Use the StatusFormatter service instead.
+	 *
+	 * @param \StatusValue $status
+	 * @return string
+	 */
+	private function formatStatus( $status ): string {
+		return MediaWikiServices::getInstance()->getFormatterFactory()
+			->getStatusFormatter( $this )->getWikiText( $status );
 	}
 
 	/**
@@ -256,7 +274,7 @@ class ApiKZChangeRequest extends ApiBase {
 			if ( !$status->isOK() ) {
 				$this->logger->error(
 					"Jira ticket creation failed with message: {errorMsg}, issueData={issueData}",
-					[ 'errorMsg' => $status->getMessage()->toString(), 'issueData' => $postJson ]
+					[ 'errorMsg' => $this->formatStatus( $status ), 'issueData' => $postJson ]
 				);
 				return false;
 			}
@@ -312,7 +330,7 @@ class ApiKZChangeRequest extends ApiBase {
 			if ( !$status->isOK() ) {
 				$this->logger->error(
 					"ReCAPTCHA validation failed with message: {errorMsg}",
-					[ 'errorMsg' => $status->getMessage()->toString() ]
+					[ 'errorMsg' => $this->formatStatus( $status ) ]
 				);
 				return false;
 			}
