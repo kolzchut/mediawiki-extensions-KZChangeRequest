@@ -386,13 +386,13 @@ class ApiKZChangeRequest extends ApiBase {
 		 * @return array
 		 */
 	private function getPageLanguageLinks( int $articleId ): array {
-		$dbr = wfGetDB( DB_REPLICA );
-		$res = $dbr->select(
-			'langlinks',
-			[ 'll_lang', 'll_title' ],
-			[ 'll_from' => $articleId ],
-			__METHOD__
-		);
+		$dbr = MediaWikiServices::getInstance()->getConnectionProvider()->getReplicaDatabase();
+		$res = $dbr->newSelectQueryBuilder()
+			->select( [ 'll_lang', 'll_title' ] )
+			->from( 'langlinks' )
+			->where( [ 'll_from' => $articleId ] )
+			->caller( __METHOD__ )
+			->fetchResultSet();
 
 		$links = [];
 		foreach ( $res as $row ) {
