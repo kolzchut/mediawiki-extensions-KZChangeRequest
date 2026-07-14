@@ -6,7 +6,7 @@
 		"wikimedia/jquery"
 	],
 	"globals": {
-		"grecaptcha": "readonly"
+		"turnstile": "readonly"
 	},
 	"rules": {
 		"no-implicit-globals": "off"

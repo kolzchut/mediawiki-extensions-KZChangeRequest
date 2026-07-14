@@ -38,7 +38,7 @@
 				"ext.KZChangeRequest.form/ext.KZChangeRequest.form.js",
 				{
 					"name": "ext.KZChangeRequest.form/config.json",
-					"config": [ "KZChangeRequestReCaptchaV3SiteKey", "KZChangeRequestFallbackEmail" ]
+					"config": [ "KZChangeRequestTurnstileSiteKey", "KZChangeRequestFallbackEmail" ]
 				}
 			],
 			"styles": [ "ext.KZChangeRequest.form/ext.KZChangeRequest.form.less" ],
@@ -64,7 +64,7 @@
 				"kzchangerequest-submission-error",
 				"kzchangerequest-confirmation-message",
 				"kzchangerequest-captcha-fail",
-				"kzchangerequest-recaptcha-load-error",
+				"kzchangerequest-captcha-load-error",
 				"kzchangerequest-fallback-message",
 				"kzchangerequest-fallback-email-title",
 				"kzchangerequest-fallback-email-body"
@@ -82,10 +82,10 @@
 		}
 	},
 	"config": {
-		"KZChangeRequestReCaptchaV3SiteKey": {
+		"KZChangeRequestTurnstileSiteKey": {
 			"value": ""
 		},
-		"KZChangeRequestRecaptchaV3Secret": {
+		"KZChangeRequestTurnstileSecretKey": {
 			"value": ""
 		},
 		"KZChangeRequestJiraServiceDeskApi": {
@@ -101,7 +101,7 @@
 		},
 		"KZChangeRequestFallbackEmail": {
 			"value": "",
-			"description": "Email address to show when reCAPTCHA fails to load. If empty, no fallback will be shown."
+			"description": "Email address to show when the CAPTCHA fails to load. If empty, no fallback will be shown."
 		}
 	},
 	"manifest_version": 2
