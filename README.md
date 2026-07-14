@@ -1,6 +1,6 @@
 # KZChangeRequest Extension
 
-The `KZChangeRequest` extension for MediaWiki allows users to submit change requests for articles. It integrates with reCAPTCHA v3 to prevent spam and provides a fallback email option if reCAPTCHA fails to load.
+The `KZChangeRequest` extension for MediaWiki allows users to submit change requests for articles. It integrates with Cloudflare Turnstile to prevent spam and provides a fallback email option if the CAPTCHA fails to load.
 
 ## Changelog
 
@@ -25,10 +25,10 @@ The `KZChangeRequest` extension for MediaWiki allows users to submit change requ
 
 | Option                              | Description                                                                              | Default Value  |
 |-------------------------------------|------------------------------------------------------------------------------------------|----------------|
-| `KZChangeRequestReCaptchaV3SiteKey` | The site key for reCAPTCHA v3.                                                           | (empty)        |
-| `KZChangeRequestRecaptchaV3Secret`  | The secret key for reCAPTCHA v3.                                                         | (empty)        |
+| `KZChangeRequestTurnstileSiteKey`   | The site key for Cloudflare Turnstile. Identified per-service by `cData: kzchangerequest`. | (empty)        |
+| `KZChangeRequestTurnstileSecretKey` | The secret key for Cloudflare Turnstile.                                                 | (empty)        |
 | `KZChangeRequestJiraServiceDeskApi` | Configuration for Jira Service Desk API.                                                 | (empty object) |
-| `KZChangeRequestFallbackEmail`      | Email address to show when reCAPTCHA fails to load. If empty, no fallback will be shown. | (empty)        |
+| `KZChangeRequestFallbackEmail`      | Email address to show when the CAPTCHA fails to load. If empty, no fallback will be shown. | (empty)        |
 
 ### Jira Service Desk API Configuration
 
@@ -50,7 +50,7 @@ To use the extension, the change request button must first be added. You can add
 `changerequest-btn`, or use the extension's own `\KZChangeRequest::createChangeRequestButton( $articleId )` function.
 
 Then, navigate to a page where the change request form is enabled. Fill out the form and submit your request.
-If reCAPTCHA fails to load, a fallback email option will be provided.
+If the CAPTCHA fails to load, a fallback email option will be provided.
 
 ## License
 

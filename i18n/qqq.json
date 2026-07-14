@@ -23,7 +23,7 @@
 	"kzchangerequest-confirmation-message": "Success message shown after a request is submitted.",
 	"kzchangerequest-modal-load-error": "Error shown when the change request dialog cannot be opened.",
 	"kzchangerequest-button-label": "Label for buttons or links that open the change request dialog.",
-	"kzchangerequest-recaptcha-load-error": "Error shown when the reCAPTCHA client cannot be loaded.",
+	"kzchangerequest-captcha-load-error": "Error shown when the Cloudflare Turnstile client cannot be loaded.",
 	"kzchangerequest-fallback-message": "Lead-in text before the fallback contact email link.",
 	"kzchangerequest-fallback-email-title": "Email subject used for the fallback mailto link. Parameters: $1 - page title.",
 	"kzchangerequest-fallback-email-body": "Default body text used in the fallback mailto link."

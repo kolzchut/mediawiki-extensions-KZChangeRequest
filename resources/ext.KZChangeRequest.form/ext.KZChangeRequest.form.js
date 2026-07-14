@@ -143,6 +143,14 @@
 			]
 		} );
 
+		// Container the Cloudflare Turnstile widget renders into (managed mode
+		// shows an interactive checkbox to suspicious clients, unlike the old
+		// fully-invisible reCAPTCHA v3).
+		this.turnstileContainer = new OO.ui.Widget( {
+			$element: $( '<div>' ).addClass( 'kzcr-turnstile' )
+		} );
+		this.fieldset.addItems( [ this.turnstileContainer ] );
+
 		// Add fieldset to form panel
 		this.formPanel.$element.append( this.fieldset.$element );
 
@@ -168,7 +176,7 @@
 		this.setMode( 'form' );
 		this.onFormChange();
 
-		this.setupReCaptcha();
+		this.setupTurnstile();
 	};
 
 	// Add mode handling
@@ -206,6 +214,9 @@
 		// Clear any errors
 		this.clearErrors();
 
+		// Mint a fresh Turnstile token for the next submission.
+		this.resetTurnstile();
+
 		// Reset to form mode
 		this.setMode( 'form' );
 
@@ -214,40 +225,88 @@
 	};
 
 	/**
-	 * Set up reCAPTCHA and fallback
+	 * Set up the Cloudflare Turnstile widget and fallback.
+	 *
+	 * Replaces the old invisible reCAPTCHA v3. Turnstile in managed mode renders
+	 * a widget that solves ahead of time, so the token is read synchronously via
+	 * turnstile.getResponse() at submit; the whole platform shares one widget,
+	 * this service being identified by cData 'kzchangerequest'.
 	 */
-	ChangeRequestDialog.prototype.setupReCaptcha = function () {
-		const siteKey = config.KZChangeRequestReCaptchaV3SiteKey;
+	ChangeRequestDialog.prototype.setupTurnstile = function () {
+		const siteKey = config.KZChangeRequestTurnstileSiteKey;
 		if ( !siteKey ) {
-			this.showError( mw.msg( 'kzchangerequest-recaptcha-load-error' ) );
+			this.showError( mw.msg( 'kzchangerequest-captcha-load-error' ) );
 			return;
 		}
 
-		// Load reCAPTCHA script
-		mw.loader.load( 'https://www.google.com/recaptcha/api.js?render=' + siteKey );
+		const dialog = this;
+		const container = this.turnstileContainer.$element[ 0 ];
+		// Explicit interface language (he/ar/ru natively supported) rather than
+		// Turnstile's browser auto-detect, so the widget matches the wiki UI.
+		const language = mw.config.get( 'wgUserLanguage' ) ||
+			mw.config.get( 'wgContentLanguage' ) || 'auto';
 
-		// Set up global reCAPTCHA callback
+		function renderWidget() {
+			// Guard against a double render if the dialog is reused.
+			if ( dialog.turnstileWidgetId !== undefined && dialog.turnstileWidgetId !== null ) {
+				return;
+			}
+			dialog.turnstileWidgetId = window.turnstile.render( container, {
+				sitekey: siteKey,
+				cData: 'kzchangerequest',
+				language: language
+			} );
+		}
+
+		// Turnstile invokes this global once api.js has finished loading.
+		window.kzcrOnloadTurnstile = renderWidget;
+
+		if ( window.turnstile ) {
+			// Script already present (dialog reopened in the same page view).
+			renderWidget();
+		} else {
+			mw.loader.load(
+				'https://challenges.cloudflare.com/turnstile/v0/api.js' +
+				'?onload=kzcrOnloadTurnstile&render=explicit'
+			);
+		}
+
+		// Global token getter used by submit(). getResponse() returns the solved
+		// token, or '' if the widget has not completed yet.
 		window.kzcrGetToken = function () {
 			return new Promise( ( resolve, reject ) => {
-				if ( !window.grecaptcha ) {
-					reject( new Error( 'reCAPTCHA not loaded' ) );
+				if ( !window.turnstile || dialog.turnstileWidgetId === undefined ||
+					dialog.turnstileWidgetId === null ) {
+					reject( new Error( 'Turnstile not loaded' ) );
 					return;
 				}
-
-				grecaptcha.ready( () => {
-					grecaptcha.execute( siteKey, { action: 'change_request' } )
-						.then( resolve )
-						.catch( reject );
-				} );
+				const token = window.turnstile.getResponse( dialog.turnstileWidgetId );
+				if ( token ) {
+					resolve( token );
+				} else {
+					reject( new Error( 'Turnstile not solved' ) );
+				}
 			} );
 		};
 
-		// Set timeout for reCAPTCHA loading
+		// Fallback if the script never loads.
 		setTimeout( () => {
-			if ( !window.grecaptcha ) {
-				this.showError( mw.msg( 'kzchangerequest-recaptcha-load-error' ) );
+			if ( !window.turnstile ) {
+				dialog.showError( mw.msg( 'kzchangerequest-captcha-load-error' ) );
 			}
 		}, 10000 ); // 10 second timeout
+	};
+
+	/**
+	 * Reset the Turnstile widget so a fresh token is minted. Turnstile tokens are
+	 * single-use (consumed server-side by siteverify), so this must run after any
+	 * submit attempt before the form can be submitted again.
+	 */
+	ChangeRequestDialog.prototype.resetTurnstile = function () {
+		if ( window.turnstile && this.turnstileWidgetId !== undefined &&
+			this.turnstileWidgetId !== null ) {
+			window.turnstile.reset( this.turnstileWidgetId );
+		}
 	};
 
 	/**
@@ -372,7 +431,7 @@
 		this.clearErrors();
 
 		try {
-			// Get reCAPTCHA token
+			// Get the Turnstile token
 			let token;
 			try {
 				token = await window.kzcrGetToken();
@@ -391,7 +450,7 @@
 				request: this.requestField.getValue(),
 				contactName: this.nameField.getValue(),
 				contactEmail: this.emailField.getValue(),
-				'g-recaptcha-response': token
+				'cf-turnstile-response': token
 			} );
 
 			if ( result.success ) {
@@ -405,6 +464,9 @@
 		} catch ( err ) {
 			this.showError( mw.msg( 'kzchangerequest-submission-error' ) );
 		} finally {
+			// The token just posted is now single-use-consumed server-side; mint a
+			// fresh one in case the user submits again.
+			this.resetTurnstile();
 			this.popPending();
 		}
 	};

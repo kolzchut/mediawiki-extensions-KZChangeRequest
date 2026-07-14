@@ -31,9 +31,8 @@ class ApiKZChangeRequest extends ApiBase {
 		$params = $this->extractRequestParams();
 		$this->requireOnlyOneParameter( $params, 'request' );
 
-		// Validate reCAPTCHA
-		$recaptchaScore = $this->validateRecaptcha( $params['g-recaptcha-response'] );
-		if ( $recaptchaScore === false ) {
+		// Validate the Cloudflare Turnstile token
+		if ( !$this->validateTurnstile( $params['cf-turnstile-response'] ) ) {
 			$this->dieWithError( 'kzchangerequest-captcha-fail' );
 		}
 
@@ -76,7 +75,7 @@ class ApiKZChangeRequest extends ApiBase {
 			'contactEmail' => [
 				ParamValidator::PARAM_TYPE => 'string',
 			],
-			'g-recaptcha-response' => [
+			'cf-turnstile-response' => [
 				ParamValidator::PARAM_TYPE => 'string',
 				ParamValidator::PARAM_REQUIRED => true,
 			],
@@ -300,16 +299,22 @@ class ApiKZChangeRequest extends ApiBase {
 	}
 
 	/**
-	 * Validate reCAPTCHA response
-	 * @param string $response reCAPTCHA response token
-	 * @return float|bool Score on success, false on failure
+	 * Validate a Cloudflare Turnstile token against the siteverify endpoint.
+	 *
+	 * Replaces the old reCAPTCHA v3 check. Turnstile is pass/fail (no score — the
+	 * v3 score was fetched but never thresholded), and echoes the widget's cData
+	 * and hostname, which we validate: cData is how this service is told apart
+	 * from the other consumers of the one shared platform widget.
+	 *
+	 * @param string $response Turnstile response token from the client widget
+	 * @return bool True if the token is valid for this service, false otherwise
 	 */
-	private function validateRecaptcha( string $response ) {
+	private function validateTurnstile( string $response ): bool {
 		// Get configuration
 		$config = $this->getConfig();
-		$secret = $config->get( 'KZChangeRequestRecaptchaV3Secret' );
+		$secret = $config->get( 'KZChangeRequestTurnstileSecretKey' );
 		if ( empty( $secret ) ) {
-			$this->logger->warning( "Missing KZChangeRequestRecaptchaV3Secret configuration" );
+			$this->logger->warning( "Missing KZChangeRequestTurnstileSecretKey configuration" );
 			return false;
 		}
 
@@ -319,43 +324,65 @@ class ApiKZChangeRequest extends ApiBase {
 			'remoteip' => $this->getRequest()->getIP(),
 		];
 
-		$url = 'https://www.google.com/recaptcha/api/siteverify';
-		$url = wfAppendQuery( $url, $data );
+		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 		$httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
-			->create( $url, [ 'method' => 'POST' ] );
+			->create( $url, [ 'method' => 'POST', 'postData' => $data ] );
 
 		try {
 			$status = $httpRequest->execute();
 			if ( !$status->isOK() ) {
 				$this->logger->error(
-					"ReCAPTCHA validation failed with message: {errorMsg}",
+					"Turnstile validation failed with message: {errorMsg}",
 					[ 'errorMsg' => $this->formatStatus( $status ) ]
 				);
 				return false;
 			}
 
 			$json = $httpRequest->getContent();
-			$response = FormatJson::decode( $json, true );
+			$result = FormatJson::decode( $json, true );
 
-			if ( !$response ) {
-				$this->logger->error( "Failed to parse reCAPTCHA response" );
+			if ( !$result ) {
+				$this->logger->error( "Failed to parse Turnstile response" );
 				return false;
 			}
 
-			if ( isset( $response['error-codes'] ) ) {
+			if ( empty( $result['success'] ) ) {
 				$this->logger->error(
-					"ReCAPTCHA validation failed with error: {errorMsg}",
-					[ 'errorMsg' => implode( ',', (array)$response['error-codes'] ) ]
+					"Turnstile validation failed with error: {errorMsg}",
+					[ 'errorMsg' => implode( ',', (array)( $result['error-codes'] ?? [] ) ) ]
 				);
 				return false;
 			}
 
-			return $response['score'];
+			// Confirm the token was minted for THIS service, not another consumer
+			// of the shared platform widget.
+			if ( ( $result['cdata'] ?? '' ) !== 'kzchangerequest' ) {
+				$this->logger->error(
+					"Turnstile cData mismatch: {cdata}",
+					[ 'cdata' => $result['cdata'] ?? '(none)' ]
+				);
+				return false;
+			}
+
+			// Defence-in-depth on top of the widget's allowed-hostnames list: the
+			// token must have been solved on this wiki's own host. Only enforced
+			// when siteverify reports a hostname (the always-pass test keys omit it).
+			$expectedHost = parse_url( (string)$config->get( 'Server' ), PHP_URL_HOST );
+			$returnedHost = $result['hostname'] ?? '';
+			if ( $expectedHost && $returnedHost && $returnedHost !== $expectedHost ) {
+				$this->logger->error(
+					"Turnstile hostname mismatch: {got} != {expected}",
+					[ 'got' => $returnedHost, 'expected' => $expectedHost ]
+				);
+				return false;
+			}
+
+			return true;
 
 		} catch ( Exception $e ) {
 			$this->logger->error(
-				"ReCAPTCHA validation threw exception: {exceptionMsg}",
+				"Turnstile validation threw exception: {exceptionMsg}",
 				[ 'exceptionMsg' => $e->getMessage() ]
 			);
 			return false;

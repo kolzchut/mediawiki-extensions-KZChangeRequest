@@ -23,8 +23,8 @@
 	"kzchangerequest-confirmation-message": "Thank you! Your request has been submitted.",
 	"kzchangerequest-modal-load-error": "Sorry, due to an internal system error a change request cannot be opened at this time. Please try again later.",
 	"kzchangerequest-button-label": "Propose a change",
-	"kzchangerequest-recaptcha-load-error": "Failed to load security verification. Please try refreshing the page.",
+	"kzchangerequest-captcha-load-error": "Failed to load security verification. Please try refreshing the page.",
 	"kzchangerequest-fallback-message": "If the problem persists, please contact us at",
 	"kzchangerequest-fallback-email-title": "Change Request for $1",
-	"kzchangerequest-fallback-email-body": "This email was sent because the change request form encountered a technical problem loading the security verification (reCAPTCHA)."
+	"kzchangerequest-fallback-email-body": "This email was sent because the change request form encountered a technical problem loading the security verification (CAPTCHA)."
 }
