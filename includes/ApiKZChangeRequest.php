@@ -2,17 +2,19 @@
 
 namespace MediaWiki\Extension\KZChangeRequest;
 
-use MediaWiki\Api\ApiBase;
 use Exception;
+use MediaWiki\Api\ApiBase;
 use MediaWiki\Json\FormatJson;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
-use WikiPage;
+use MediaWiki\Parser\Sanitizer;
 use MediaWiki\Registration\ExtensionRegistry;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use MediaWiki\Parser\Sanitizer;
 use Wikimedia\ParamValidator\ParamValidator;
+use Wikimedia\ParamValidator\TypeDef\StringDef;
+use WikiPage;
 
 class ApiKZChangeRequest extends ApiBase {
 	/** @var LoggerInterface */
@@ -30,6 +32,26 @@ class ApiKZChangeRequest extends ApiBase {
 		// Validate request
 		$params = $this->extractRequestParams();
 		$this->requireOnlyOneParameter( $params, 'request' );
+
+		// Throttle before doing any work: each accepted call opens a Jira
+		// ticket, and Turnstile tokens (single-use, but mintable in bulk by a
+		// solver) do not by themselves cap volume. A default limit is seeded in
+		// Hooks::onRegistration so this is active out of the box.
+		//
+		// pingLimiter() stores its counters in the main object cache. When that
+		// is CACHE_NONE the limiter cannot persist a count and (via WRStats over
+		// EmptyBagOStuff) fails *closed*, blocking every request — which would
+		// take the whole form offline. Skip the throttle in that case, but log
+		// loudly so a production cache outage is visible rather than silent.
+		// Turnstile still gates submissions regardless. Staging/prod run a Redis
+		// main cache, so the throttle is active there.
+		if ( $this->getConfig()->get( MainConfigNames::MainCacheType ) === CACHE_NONE ) {
+			$this->logger->warning(
+				'KZChangeRequest rate limiting is inactive: $wgMainCacheType is CACHE_NONE'
+			);
+		} elseif ( $this->getUser()->pingLimiter( 'kzchangerequest' ) ) {
+			$this->dieWithError( 'apierror-ratelimited', 'ratelimited' );
+		}
 
 		// Validate the Cloudflare Turnstile token
 		if ( !$this->validateTurnstile( $params['cf-turnstile-response'] ) ) {
@@ -68,12 +90,15 @@ class ApiKZChangeRequest extends ApiBase {
 			'request' => [
 				ParamValidator::PARAM_TYPE => 'string',
 				ParamValidator::PARAM_REQUIRED => true,
+				StringDef::PARAM_MAX_CHARS => 5000,
 			],
 			'contactName' => [
 				ParamValidator::PARAM_TYPE => 'string',
+				StringDef::PARAM_MAX_CHARS => 200,
 			],
 			'contactEmail' => [
 				ParamValidator::PARAM_TYPE => 'string',
+				StringDef::PARAM_MAX_CHARS => 254,
 			],
 			'cf-turnstile-response' => [
 				ParamValidator::PARAM_TYPE => 'string',
@@ -95,23 +120,31 @@ class ApiKZChangeRequest extends ApiBase {
 		if ( empty( $config ) || empty( $config['user'] ) || empty( $config['password'] )
 			|| empty( $config['serviceDeskId'] ) || empty( $config['requestTypeId'] )
 		) {
+			// Log only which fields are present/absent — never the secret
+			// values themselves. The KZChangeRequest log channel is a
+			// bind-mounted file on staging/prod, so dumping the service-desk
+			// password here would leak a live credential to anyone with log
+			// access.
 			$this->logger->error(
 				"Missing Jira configuration: "
 				. "user={user}, password={password}, serviceDeskId={serviceDeskId}, requestTypeId={requestTypeId}",
 				[
-					'user' => $config['user'] ?? '',
-					'password' => $config['password'] ?? '',
-					'serviceDeskId' => $config['serviceDeskId'] ?? '',
-					'requestTypeId' => $config['requestTypeId'] ?? ''
+					'user' => empty( $config['user'] ) ? 'unset' : 'set',
+					'password' => empty( $config['password'] ) ? 'unset' : 'set',
+					'serviceDeskId' => empty( $config['serviceDeskId'] ) ? 'unset' : 'set',
+					'requestTypeId' => empty( $config['requestTypeId'] ) ? 'unset' : 'set'
 				]
 			);
 			throw new RuntimeException( 'Invalid Jira configuration' );
 		}
 
-		// Check for existing customer if email provided
+		// Only trust the contact email once it validates. The same validated
+		// value is used both for the customer lookup and for the Jira field
+		// below — an address that fails validation is dropped, not stored.
 		$customerId = null;
-		$email = $params['contactEmail'] ?? '';
-		if ( !empty( $email ) && Sanitizer::validateEmail( $email ) ) {
+		$rawEmail = $params['contactEmail'] ?? '';
+		$email = ( !empty( $rawEmail ) && Sanitizer::validateEmail( $rawEmail ) ) ? $rawEmail : '';
+		if ( $email !== '' ) {
 			$customerId = $this->jiraGetCustomer( $email, $config );
 		}
 
@@ -198,7 +231,12 @@ class ApiKZChangeRequest extends ApiBase {
 
 		$url = wfAppendQuery( $calloutUrl, $queryData );
 		$httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
-			->create( $url, [ 'username' => $jiraConfig['user'], 'password' => $jiraConfig['password'] ] );
+			->create( $url, [
+				'username' => $jiraConfig['user'],
+				'password' => $jiraConfig['password'],
+				'timeout' => 10,
+				'connectTimeout' => 5,
+			] );
 
 		$httpRequest->setHeader( 'Accept', 'application/json' );
 		$httpRequest->setHeader( 'Content-Type', 'application/json' );
@@ -208,8 +246,8 @@ class ApiKZChangeRequest extends ApiBase {
 			$status = $httpRequest->execute();
 			if ( !$status->isOK() ) {
 				$this->logger->error(
-					"Jira customer query callout failed with message: {errorMsg}, email={email}",
-					[ 'errorMsg' => $this->formatStatus( $status ), 'email' => $email ]
+					"Jira customer query callout failed with message: {errorMsg}",
+					[ 'errorMsg' => $this->formatStatus( $status ) ]
 				);
 				return null;
 			}
@@ -262,7 +300,9 @@ class ApiKZChangeRequest extends ApiBase {
 				'method' => 'POST',
 				'postData' => $postJson,
 				'username' => $jiraConfig['user'],
-				'password' => $jiraConfig['password']
+				'password' => $jiraConfig['password'],
+				'timeout' => 15,
+				'connectTimeout' => 5,
 			] );
 
 		$httpRequest->setHeader( 'Accept', 'application/json' );
@@ -327,7 +367,12 @@ class ApiKZChangeRequest extends ApiBase {
 		$url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 		$httpRequest = MediaWikiServices::getInstance()->getHttpRequestFactory()
-			->create( $url, [ 'method' => 'POST', 'postData' => $data ] );
+			->create( $url, [
+				'method' => 'POST',
+				'postData' => $data,
+				'timeout' => 10,
+				'connectTimeout' => 5,
+			] );
 
 		try {
 			$status = $httpRequest->execute();
