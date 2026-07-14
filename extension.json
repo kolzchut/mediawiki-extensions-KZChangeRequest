@@ -18,6 +18,9 @@
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\KZChangeRequest\\": "includes/"
 	},
+	"TestAutoloadNamespaces": {
+		"MediaWiki\\Extension\\KZChangeRequest\\Tests\\Integration\\": "tests/phpunit/integration/"
+	},
 	"APIModules": {
 		"kzchangerequest": "MediaWiki\\Extension\\KZChangeRequest\\ApiKZChangeRequest"
 	},
