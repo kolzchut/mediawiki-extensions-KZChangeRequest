@@ -1,6 +1,6 @@
 {
 	"name": "KZChangeRequest",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"author": [
 		"Joel R. ([https://www.kolzchut.org.il Kol-Zchut])"
 	],
@@ -8,8 +8,9 @@
 	"descriptionmsg": "kzchangerequest-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
+	"callback": "MediaWiki\\Extension\\KZChangeRequest\\Hooks::onRegistration",
 	"requires": {
-		"MediaWiki": ">= 1.35.0"
+		"MediaWiki": ">= 1.43.0"
 	},
 	"AutoloadClasses": {
 		"KZChangeRequest": "KZChangeRequest.php"
