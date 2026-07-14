@@ -2,19 +2,19 @@
 
 namespace MediaWiki\Extension\KZChangeRequest;
 
-use MediaWiki\Api\ApiBase;
 use Exception;
+use MediaWiki\Api\ApiBase;
 use MediaWiki\Json\FormatJson;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
-use WikiPage;
+use MediaWiki\Parser\Sanitizer;
 use MediaWiki\Registration\ExtensionRegistry;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use MediaWiki\Parser\Sanitizer;
 use Wikimedia\ParamValidator\ParamValidator;
 use Wikimedia\ParamValidator\TypeDef\StringDef;
+use WikiPage;
 
 class ApiKZChangeRequest extends ApiBase {
 	/** @var LoggerInterface */
