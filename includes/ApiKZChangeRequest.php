@@ -6,6 +6,7 @@ use MediaWiki\Api\ApiBase;
 use Exception;
 use MediaWiki\Json\FormatJson;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use WikiPage;
 use MediaWiki\Registration\ExtensionRegistry;
@@ -36,7 +37,19 @@ class ApiKZChangeRequest extends ApiBase {
 		// ticket, and Turnstile tokens (single-use, but mintable in bulk by a
 		// solver) do not by themselves cap volume. A default limit is seeded in
 		// Hooks::onRegistration so this is active out of the box.
-		if ( $this->getUser()->pingLimiter( 'kzchangerequest' ) ) {
+		//
+		// pingLimiter() stores its counters in the main object cache. When that
+		// is CACHE_NONE the limiter cannot persist a count and (via WRStats over
+		// EmptyBagOStuff) fails *closed*, blocking every request — which would
+		// take the whole form offline. Skip the throttle in that case, but log
+		// loudly so a production cache outage is visible rather than silent.
+		// Turnstile still gates submissions regardless. Staging/prod run a Redis
+		// main cache, so the throttle is active there.
+		if ( $this->getConfig()->get( MainConfigNames::MainCacheType ) === CACHE_NONE ) {
+			$this->logger->warning(
+				'KZChangeRequest rate limiting is inactive: $wgMainCacheType is CACHE_NONE'
+			);
+		} elseif ( $this->getUser()->pingLimiter( 'kzchangerequest' ) ) {
 			$this->dieWithError( 'apierror-ratelimited', 'ratelimited' );
 		}
 
