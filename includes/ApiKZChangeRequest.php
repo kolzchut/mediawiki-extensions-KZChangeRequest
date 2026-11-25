@@ -17,6 +17,13 @@ use Wikimedia\ParamValidator\TypeDef\StringDef;
 use WikiPage;
 
 class ApiKZChangeRequest extends ApiBase {
+	/**
+	 * Cloudflare's documented always-pass Turnstile test secret.
+	 *
+	 * @see https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+	 */
+	public const TURNSTILE_TEST_SECRET = '1x0000000000000000000000000000000AA';
+
 	/** @var LoggerInterface */
 	private LoggerInterface $logger;
 
@@ -346,6 +353,10 @@ class ApiKZChangeRequest extends ApiBase {
 	 * and hostname, which we validate: cData is how this service is told apart
 	 * from the other consumers of the one shared platform widget.
 	 *
+	 * Cloudflare's test secret is answered with hostname 'example.com' and no
+	 * cData, so it passes only in development (MW_ENVIRONMENT=development); a
+	 * real secret always gets the cData and hostname checks.
+	 *
 	 * @param string $response Turnstile response token from the client widget
 	 * @return bool True if the token is valid for this service, false otherwise
 	 */
@@ -400,6 +411,11 @@ class ApiKZChangeRequest extends ApiBase {
 				return false;
 			}
 
+			if ( $this->isDevelopmentTestSecret( $secret ) ) {
+				$this->logger->debug( 'Turnstile test secret accepted in development' );
+				return true;
+			}
+
 			// Confirm the token was minted for THIS service, not another consumer
 			// of the shared platform widget.
 			if ( ( $result['cdata'] ?? '' ) !== 'kzchangerequest' ) {
@@ -411,8 +427,8 @@ class ApiKZChangeRequest extends ApiBase {
 			}
 
 			// Defence-in-depth on top of the widget's allowed-hostnames list: the
-			// token must have been solved on this wiki's own host. Only enforced
-			// when siteverify reports a hostname (the always-pass test keys omit it).
+			// token must have been solved on this wiki's own host. siteverify reports
+			// the hostname for real keys; a response without one is not rejected here.
 			$expectedHost = parse_url( (string)$config->get( 'Server' ), PHP_URL_HOST );
 			$returnedHost = $result['hostname'] ?? '';
 			if ( $expectedHost && $returnedHost && $returnedHost !== $expectedHost ) {
@@ -432,6 +448,16 @@ class ApiKZChangeRequest extends ApiBase {
 			);
 			return false;
 		}
+	}
+
+	/**
+	 * @param string $secret The configured Turnstile secret
+	 * @return bool Whether it is Cloudflare's test secret and this is a
+	 *  development wiki
+	 */
+	private function isDevelopmentTestSecret( string $secret ): bool {
+		return $secret === self::TURNSTILE_TEST_SECRET
+			&& getenv( 'MW_ENVIRONMENT' ) === 'development';
 	}
 
 		/**
