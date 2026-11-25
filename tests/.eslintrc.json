@@ -1,0 +1,10 @@
+{
+	"rules": {
+		"n/no-missing-import": [
+			"error",
+			{
+				"allowModules": [ "@playwright/test" ]
+			}
+		]
+	}
+}
