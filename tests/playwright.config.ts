@@ -16,35 +16,35 @@ import { defineConfig, devices } from '@playwright/test';
  * The change-request button appears on content articles; the specs land on
  * Special:Random so they don't depend on any particular page existing.
  */
-export default defineConfig({
-  testDir: './e2e',
-  testMatch: ['**/*.spec.ts'],
-  timeout: 45000,
-  expect: { timeout: 10000 },
-  fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: 1,
+export default defineConfig( {
+	testDir: './e2e',
+	testMatch: [ '**/*.spec.ts' ],
+	timeout: 45000,
+	expect: { timeout: 10000 },
+	fullyParallel: false,
+	forbidOnly: !!process.env.CI,
+	retries: process.env.CI ? 2 : 0,
+	workers: 1,
 
-  reporter: [
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
-    ['list'],
-  ],
+	reporter: [
+		[ 'html', { outputFolder: 'playwright-report', open: 'never' } ],
+		[ 'list' ],
+	],
 
-  use: {
-    baseURL: process.env.MW_BASE_URL || 'http://localhost:8082',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
-  },
+	use: {
+		baseURL: process.env.MW_BASE_URL || 'http://localhost:8082',
+		trace: 'on-first-retry',
+		screenshot: 'only-on-failure',
+		video: 'retain-on-failure',
+	},
 
-  projects: [
-    {
-      name: 'kzcr-desktop',
-      use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1440, height: 900 },
-      },
-    },
-  ],
-});
+	projects: [
+		{
+			name: 'kzcr-desktop',
+			use: {
+				...devices[ 'Desktop Chrome' ],
+				viewport: { width: 1440, height: 900 },
+			},
+		},
+	],
+} );
