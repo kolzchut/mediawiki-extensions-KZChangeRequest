@@ -30,6 +30,12 @@ The `KZChangeRequest` extension for MediaWiki allows users to submit change requ
 | `KZChangeRequestJiraServiceDeskApi` | Configuration for Jira Service Desk API.                                                 | (empty object) |
 | `KZChangeRequestFallbackEmail`      | Email address to show when the CAPTCHA fails to load. If empty, no fallback will be shown. | (empty)        |
 
+Cloudflare's [test keys](https://developers.cloudflare.com/turnstile/troubleshooting/testing/)
+work only on a development wiki (`MW_ENVIRONMENT=development`): siteverify
+answers the always-pass test secret with the hostname `example.com` and no
+`cData`, so the server accepts it there without those two checks. Anywhere
+else, and for a real secret, both are checked.
+
 ### Jira Service Desk API Configuration
 
 The `KZChangeRequestJiraServiceDeskApi` option is an object with the following properties:
